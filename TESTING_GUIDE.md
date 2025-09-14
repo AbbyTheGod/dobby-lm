@@ -56,9 +56,7 @@ npm run dev
    FIREWORKS_API_KEY=fw-your-actual-api-key-here
 
    # Web Scraping APIs (Optional)
-   ABSTRACTAPI_KEY=your_abstractapi_key_here
-   EXTRACTOR_API_KEY=your_extractor_api_key_here
-   APYHUB_API_KEY=your_apyhub_api_key_here
+   SCRAPERAPI_KEY=your_scraperapi_key_here
    ```
 
 ### **Step 2: Database Setup**

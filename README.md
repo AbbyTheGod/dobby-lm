@@ -4,28 +4,31 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 
 ## Features
 
-- **Multi-source Support**: Upload PDFs, paste text, or add URLs
-- **AI-powered Chat**: Grounded Q&A with inline citations
+- **Multi-source Support**: Paste text or add URLs (PDF support temporarily disabled for security)
+- **AI-powered Chat**: Grounded Q&A with inline citations via Dobby AI
 - **Study Tools**: Generate flashcards, quizzes, and briefings
 - **Vector Search**: Semantic search using pgvector embeddings
 - **Citation System**: Hover over citations to see source content
 - **Modern UI**: Clean 3-column layout with Tailwind CSS
+- **Security**: Latest dependencies with no known vulnerabilities
+- **Testing Tools**: Built-in scripts to verify setup and API connections
 
 ## Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), React, Tailwind CSS
+- **Frontend**: Next.js 15 (App Router), React, Tailwind CSS
 - **Backend**: Next.js API Routes, Express
 - **Database**: PostgreSQL with pgvector extension
 - **AI**: Fireworks API (Dobby 8B model)
 - **Embeddings**: BGE-small-en model via Transformers.js
-- **File Processing**: PDF parsing, web scraping
+- **Web Scraping**: ScraperAPI for reliable content extraction
+- **Security**: Latest dependencies with no known vulnerabilities
 
 ## Prerequisites
 
 - Node.js 18+ 
 - PostgreSQL 12+ with pgvector extension
 - Fireworks API key
-- (Optional) Web scraping API keys for better URL content extraction
+- ScraperAPI key (for URL content extraction)
 
 ## Installation
 
@@ -70,10 +73,8 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
    DATABASE_URL=postgresql://username:password@localhost:5432/notebooklm_lite
    FIREWORKS_API_KEY=your_fireworks_api_key_here
    
-   # Optional: Web scraping APIs for better URL content extraction
-   ABSTRACTAPI_KEY=your_abstractapi_key_here
-   EXTRACTOR_API_KEY=your_extractor_api_key_here
-   APYHUB_API_KEY=your_apyhub_api_key_here
+   # Required: Web scraping API for URL content extraction
+   SCRAPERAPI_KEY=your_scraperapi_key_here
    ```
 
 6. **Set up database schema**
@@ -81,12 +82,19 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
    npm run db:setup
    ```
 
-7. **Start the development server**
+7. **Test your setup** (optional)
+   ```bash
+   npm run check-setup
+   npm run test-fireworks
+   npm run test-scraping
+   ```
+
+8. **Start the development server**
    ```bash
    npm run dev
    ```
 
-8. **Open your browser**
+9. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Usage
@@ -148,7 +156,8 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 
 ### Environment Variables
 - `DATABASE_URL` - PostgreSQL connection string
-- `FIREWORKS_API_KEY` - API key for Fireworks AI
+- `FIREWORKS_API_KEY` - API key for Fireworks AI (required)
+- `SCRAPERAPI_KEY` - API key for ScraperAPI (required for URL scraping)
 - `NEXT_PUBLIC_APP_URL` - Application URL (default: http://localhost:3000)
 
 ### Model Configuration
@@ -157,33 +166,15 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 - **Chunk Size**: ~800 tokens (configurable)
 
 ### Web Scraping APIs
-The application uses multiple APIs for URL content extraction with automatic fallback:
+The application uses ScraperAPI for reliable URL content extraction:
 
-1. **Mercury Parser** (Free, Default)
-   - 1,000 requests/month free
-   - Excellent article extraction
-   - No API key required
-
-2. **AbstractAPI** (Free)
-   - 1,000 requests/month free
-   - JavaScript rendering, CAPTCHA handling
-   - Proxy management, IP rotation
-   - Requires `ABSTRACTAPI_KEY`
-
-3. **Extractor API** (Paid)
-   - $0.001 per request
-   - JavaScript rendering, IP rotation
-   - Requires `EXTRACTOR_API_KEY`
-
-4. **ApyHub** (Free)
-   - 2M requests/month free
-   - Simple text extraction
-   - Requires `APYHUB_API_KEY`
-
-5. **Fallback Scraping** (Free)
-   - Direct scraping with Cheerio
-   - Always available as last resort
-   - Basic content extraction
+**ScraperAPI** (Paid, Required)
+- $0.001 per request
+- JavaScript rendering, CAPTCHA handling
+- Proxy management, IP rotation
+- Anti-bot protection bypass
+- Reliable content extraction
+- Requires `SCRAPERAPI_KEY`
 
 ## Development
 
@@ -191,20 +182,40 @@ The application uses multiple APIs for URL content extraction with automatic fal
 ```
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
+│   │   ├── chat/          # Chat API with Dobby
+│   │   ├── sources/       # Source management
+│   │   ├── ingest/        # Content processing
+│   │   └── ...            # Other endpoints
 │   ├── components/        # React components
 │   └── globals.css        # Global styles
 ├── lib/                   # Utility libraries
-│   ├── database.js        # Database connection
+│   ├── database.js        # Database connection & handlers
 │   ├── text-processing.js # Text chunking & embeddings
-│   └── fireworks.js       # AI API client
-├── scripts/               # Database setup scripts
+│   ├── fireworks.js       # Dobby AI API client
+│   └── simple-scraping.js # Web scraping utilities
+├── scripts/               # Setup & testing scripts
+│   ├── init-db.js         # Database initialization
+│   ├── check-setup.js     # Setup verification
+│   ├── test-fireworks.js  # AI API testing
+│   └── test-scraping.js   # Scraping API testing
 └── package.json
 ```
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run db:setup` - Initialize database schema
+- `npm run init-db` - Alternative database setup command
+- `npm run check-setup` - Verify configuration
+- `npm run test-fireworks` - Test AI API connection
+- `npm run test-scraping` - Test web scraping API
 
 ### Adding New Features
 1. Create API routes in `app/api/`
 2. Add React components in `app/components/`
-3. Update database schema in `scripts/setup-db.js`
+3. Update database schema in `scripts/init-db.js`
 4. Add utility functions in `lib/`
 
 ## Troubleshooting
@@ -225,10 +236,16 @@ The application uses multiple APIs for URL content extraction with automatic fal
    - Check API quota and limits
    - Ensure model name is correct
 
-4. **PDF Processing Issues**
-   - Verify PDF is not password protected
-   - Check file size limits
-   - Ensure PDF contains extractable text
+4. **Web Scraping Issues**
+   - Verify ScraperAPI key is correct
+   - Check API quota and limits
+   - Ensure URL is accessible
+   - Test with `npm run test-scraping`
+
+5. **PDF Processing Issues**
+   - Note: PDF support is currently disabled for security
+   - Use text input or URL sources instead
+   - PDF parsing will be re-enabled in future updates
 
 ### Performance Tips
 - Use SSD storage for better embedding performance
@@ -248,9 +265,26 @@ MIT License - see LICENSE file for details.
 4. Add tests if applicable
 5. Submit a pull request
 
+## Recent Updates
+
+### Security & Stability Improvements
+- ✅ **Removed** vulnerable `pdf-parse` dependency
+- ✅ **Updated** all dependencies to latest versions
+- ✅ **Fixed** missing npm scripts (`db:setup`, `test-scraping`)
+- ✅ **Cleaned** obsolete Next.js configuration
+- ✅ **Standardized** environment variable documentation
+- ✅ **Enhanced** error handling and debugging
+
+### Dependencies Updated
+- `next`: 14.0.4 → 15.5.3
+- `axios`: 1.6.2 → 1.12.1
+- `@xenova/transformers`: 2.6.2 → 2.17.2
+
 ## Support
 
 For issues and questions:
 1. Check the troubleshooting section
-2. Search existing GitHub issues
-3. Create a new issue with detailed information
+2. Run `npm run check-setup` to verify configuration
+3. Test APIs with `npm run test-fireworks` and `npm run test-scraping`
+4. Search existing GitHub issues
+5. Create a new issue with detailed information

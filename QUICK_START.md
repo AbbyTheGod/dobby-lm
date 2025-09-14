@@ -19,7 +19,7 @@ DATABASE_URL=postgresql://username:password@ep-xxx.us-east-1.aws.neon.tech/neond
 FIREWORKS_API_KEY=fw-your-api-key-here
 
 # Optional: Web scraping APIs
-ABSTRACTAPI_KEY=your-key-here
+SCRAPERAPI_KEY=your-key-here
 ```
 
 ### Step 3: Start the Application
