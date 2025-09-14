@@ -7,8 +7,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="bg-secondary-50 min-h-screen">
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-background text-foreground min-h-screen transition-colors duration-200">
         {children}
       </body>
     </html>
