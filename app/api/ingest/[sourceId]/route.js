@@ -1,0 +1,74 @@
+import { NextResponse } from 'next/server';
+import { query } from '../../../../lib/database.js';
+import { chunkText, generateEmbedding, estimateTokenCount } from '../../../../lib/text-processing.js';
+
+export async function POST(request, { params }) {
+  try {
+    const { sourceId } = params;
+
+    // Get source
+    const sourceResult = await query(
+      'SELECT * FROM sources WHERE id = $1',
+      [sourceId]
+    );
+
+    if (sourceResult.rows.length === 0) {
+      return NextResponse.json({ error: 'Source not found' }, { status: 404 });
+    }
+
+    const source = sourceResult.rows[0];
+
+    if (!source.content) {
+      return NextResponse.json({ error: 'No content to process' }, { status: 400 });
+    }
+
+    // Update source status to processing
+    await query(
+      'UPDATE sources SET status = $1 WHERE id = $2',
+      ['processing', sourceId]
+    );
+
+    try {
+      // Chunk the content
+      const chunks = chunkText(source.content);
+      console.log(`Created ${chunks.length} chunks for source ${sourceId}`);
+
+      // Process each chunk
+      const chunkPromises = chunks.map(async (chunkContent, index) => {
+        const tokenCount = estimateTokenCount(chunkContent);
+        const embedding = await generateEmbedding(chunkContent);
+
+        return query(
+          `INSERT INTO chunks (source_id, content, chunk_index, token_count, embedding)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [sourceId, chunkContent, index, tokenCount, JSON.stringify(embedding)]
+        );
+      });
+
+      await Promise.all(chunkPromises);
+
+      // Update source status to completed
+      await query(
+        'UPDATE sources SET status = $1, updated_at = NOW() WHERE id = $2',
+        ['completed', sourceId]
+      );
+
+      return NextResponse.json({ 
+        message: 'Source ingested successfully',
+        chunksCreated: chunks.length 
+      });
+
+    } catch (processingError) {
+      // Update source status to failed
+      await query(
+        'UPDATE sources SET status = $1 WHERE id = $2',
+        ['failed', sourceId]
+      );
+      throw processingError;
+    }
+
+  } catch (error) {
+    console.error('Error ingesting source:', error);
+    return NextResponse.json({ error: 'Failed to ingest source' }, { status: 500 });
+  }
+}
