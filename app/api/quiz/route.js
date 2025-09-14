@@ -87,12 +87,24 @@ export async function GET(request) {
       [notebookId, 'quiz']
     );
 
-    const quizzes = result.rows.map(row => ({
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      createdAt: row.created_at
-    }));
+    const quizzes = result.rows.map(row => {
+      let quiz;
+      try {
+        quiz = JSON.parse(row.content);
+        if (!quiz || !Array.isArray(quiz.questions)) {
+          throw new Error('Quiz content does not contain questions array');
+        }
+      } catch (parseError) {
+        console.error(`Error parsing quiz for id ${row.id}:`, parseError);
+        quiz = { questions: [] };
+      }
+      return {
+        id: row.id,
+        title: row.title,
+        quiz,
+        createdAt: row.created_at
+      };
+    });
 
     return NextResponse.json(quizzes);
 
