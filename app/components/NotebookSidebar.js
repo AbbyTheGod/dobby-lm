@@ -164,6 +164,9 @@ export default function NotebookSidebar({
                         onClick={(e) => {
                           e.stopPropagation();
                           console.log('🗑️ NotebookSidebar: Delete button clicked for source:', source.id);
+                          console.log('🗑️ NotebookSidebar: Source object:', source);
+                          console.log('🗑️ NotebookSidebar: Source ID type:', typeof source.id);
+                          console.log('🗑️ NotebookSidebar: Source ID value:', JSON.stringify(source.id));
                           onSourceDeleted(source.id);
                         }}
                         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"

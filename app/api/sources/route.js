@@ -157,17 +157,34 @@ export async function DELETE(request) {
     }
 
     console.log('🗑️ Sources API: Deleting source:', sourceId);
-
-    // Delete associated chunks first
-    await query('DELETE FROM chunks WHERE source_id = $1', [sourceId]);
-    console.log('🗑️ Sources API: Deleted associated chunks');
-
-    // Delete the source
-    const result = await query('DELETE FROM sources WHERE id = $1 RETURNING *', [sourceId]);
+    console.log('🗑️ Sources API: Source ID type:', typeof sourceId);
     
-    if (result.rows.length === 0) {
+    // Convert sourceId to string to ensure consistent type
+    const sourceIdStr = String(sourceId);
+    console.log('🗑️ Sources API: Converted source ID:', sourceIdStr);
+
+    // First, check what sources exist in the database
+    const allSources = await query('SELECT id, title, notebook_id FROM sources ORDER BY created_at DESC LIMIT 10');
+    console.log('🔍 Sources API: All sources in database:', allSources.rows.map(s => ({ id: s.id, title: s.title, notebook_id: s.notebook_id })));
+
+    // Check if the specific source exists
+    const sourceCheck = await query('SELECT * FROM sources WHERE id = $1', [sourceIdStr]);
+    console.log('🔍 Sources API: Source check result:', sourceCheck.rows.length, 'rows found');
+    
+    if (sourceCheck.rows.length === 0) {
+      console.log('❌ Sources API: Source not found in database');
       return NextResponse.json({ error: 'Source not found' }, { status: 404 });
     }
+    
+    console.log('✅ Sources API: Source found, proceeding with deletion');
+
+    // Delete associated chunks first
+    const chunksResult = await query('DELETE FROM chunks WHERE source_id = $1', [sourceIdStr]);
+    console.log('🗑️ Sources API: Deleted', chunksResult.rowCount, 'associated chunks');
+
+    // Delete the source
+    const result = await query('DELETE FROM sources WHERE id = $1 RETURNING *', [sourceIdStr]);
+    console.log('🗑️ Sources API: Source deletion result:', result.rowCount, 'rows deleted');
 
     console.log('✅ Sources API: Source deleted successfully');
     return NextResponse.json({ 
