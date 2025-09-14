@@ -89,7 +89,7 @@ export async function POST(request) {
     return NextResponse.json({
       id: result.rows[0].id,
       title: result.rows[0].title,
-      quiz: quiz,
+      content: quiz,
       createdAt: result.rows[0].created_at
     });
 

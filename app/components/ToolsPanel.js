@@ -1,12 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import QuizViewer from './QuizViewer';
 import BriefingViewer from './BriefingViewer';
 
 export default function ToolsPanel({ notebook }) {
-  const [activeTab, setActiveTab] = useState('quiz');
-  const [quizzes, setQuizzes] = useState([]);
+  const [activeTab, setActiveTab] = useState('briefing');
   const [briefings, setBriefings] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -21,15 +19,9 @@ export default function ToolsPanel({ notebook }) {
 
     try {
       setLoading(true);
-      const [quizzesRes, briefingsRes] = await Promise.all([
-        fetch(`/api/quiz?notebookId=${notebook.id}`),
+      const [briefingsRes] = await Promise.all([
         fetch(`/api/briefing?notebookId=${notebook.id}`),
       ]);
-
-      if (quizzesRes.ok) {
-        const data = await quizzesRes.json();
-        setQuizzes(data);
-      }
 
       if (briefingsRes.ok) {
         const data = await briefingsRes.json();
@@ -65,15 +57,12 @@ export default function ToolsPanel({ notebook }) {
         console.log(`🔧 ${type} data structure:`, {
           id: data.id,
           title: data.title,
-          hasQuiz: !!data.quiz,
           hasContent: !!data.content,
-          quizKeys: data.quiz ? Object.keys(data.quiz) : 'no quiz',
-          contentKeys: data.content ? Object.keys(data.content) : 'no content'
+          contentKeys: data.content ? Object.keys(data.content) : 'no content',
+          contentType: typeof data.content
         });
         
-        if (type === 'quiz') {
-          setQuizzes(prev => [data, ...prev]);
-        } else if (type === 'briefing') {
+        if (type === 'briefing') {
           setBriefings(prev => [data, ...prev]);
         }
       } else {
@@ -105,7 +94,6 @@ export default function ToolsPanel({ notebook }) {
   }
 
   const tabs = [
-    { id: 'quiz', label: 'Quiz', count: quizzes.length },
     { id: 'briefing', label: 'Briefing', count: briefings.length },
   ];
 
@@ -142,14 +130,6 @@ export default function ToolsPanel({ notebook }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {activeTab === 'quiz' && (
-          <QuizViewer
-            quizzes={quizzes}
-            onGenerate={() => generateTool('quiz')}
-            loading={loading}
-          />
-        )}
-        
         {activeTab === 'briefing' && (
           <BriefingViewer
             briefings={briefings}
