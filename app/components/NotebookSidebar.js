@@ -152,13 +152,16 @@ export default function NotebookSidebar({
                           ? 'status-warning'
                           : source.status === 'failed'
                           ? 'status-error'
+                          : source.status === 'unsupported'
+                          ? 'status-error'
                           : 'status-pending'
                       }`}>
-                        {source.status}
+                        {source.status === 'unsupported' ? 'not supported' : source.status}
                       </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          console.log('🗑️ NotebookSidebar: Delete button clicked for source:', source.id);
                           onSourceDeleted(source.id);
                         }}
                         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"

@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import FlashcardViewer from './FlashcardViewer';
 import QuizViewer from './QuizViewer';
 import BriefingViewer from './BriefingViewer';
 
 export default function ToolsPanel({ notebook }) {
-  const [activeTab, setActiveTab] = useState('flashcards');
-  const [flashcards, setFlashcards] = useState([]);
+  const [activeTab, setActiveTab] = useState('quiz');
   const [quizzes, setQuizzes] = useState([]);
   const [briefings, setBriefings] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,16 +21,10 @@ export default function ToolsPanel({ notebook }) {
 
     try {
       setLoading(true);
-      const [flashcardsRes, quizzesRes, briefingsRes] = await Promise.all([
-        fetch(`/api/flashcards?notebookId=${notebook.id}`),
+      const [quizzesRes, briefingsRes] = await Promise.all([
         fetch(`/api/quiz?notebookId=${notebook.id}`),
         fetch(`/api/briefing?notebookId=${notebook.id}`),
       ]);
-
-      if (flashcardsRes.ok) {
-        const data = await flashcardsRes.json();
-        setFlashcards(data);
-      }
 
       if (quizzesRes.ok) {
         const data = await quizzesRes.json();
@@ -79,9 +71,7 @@ export default function ToolsPanel({ notebook }) {
           contentKeys: data.content ? Object.keys(data.content) : 'no content'
         });
         
-        if (type === 'flashcards') {
-          setFlashcards(prev => [data, ...prev]);
-        } else if (type === 'quiz') {
+        if (type === 'quiz') {
           setQuizzes(prev => [data, ...prev]);
         } else if (type === 'briefing') {
           setBriefings(prev => [data, ...prev]);
@@ -115,7 +105,6 @@ export default function ToolsPanel({ notebook }) {
   }
 
   const tabs = [
-    { id: 'flashcards', label: 'Flashcards', count: flashcards.length },
     { id: 'quiz', label: 'Quiz', count: quizzes.length },
     { id: 'briefing', label: 'Briefing', count: briefings.length },
   ];
@@ -153,14 +142,6 @@ export default function ToolsPanel({ notebook }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {activeTab === 'flashcards' && (
-          <FlashcardViewer
-            flashcards={flashcards}
-            onGenerate={() => generateTool('flashcards')}
-            loading={loading}
-          />
-        )}
-        
         {activeTab === 'quiz' && (
           <QuizViewer
             quizzes={quizzes}

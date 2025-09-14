@@ -107,22 +107,28 @@ export default function Home() {
 
   const handleSourceDeleted = async (sourceId) => {
     try {
+      console.log('🗑️ Frontend: Attempting to delete source:', sourceId);
       const response = await fetch(`/api/sources?sourceId=${sourceId}`, {
         method: 'DELETE',
       });
       
+      console.log('🗑️ Frontend: Delete response status:', response.status);
+      
       if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Frontend: Source deleted successfully:', result);
         // Refresh sources list
         if (selectedNotebook) {
           fetchSources(selectedNotebook.id);
         }
-        console.log('✅ Source deleted successfully');
       } else {
         const error = await response.json();
-        console.error('❌ Error deleting source:', error);
+        console.error('❌ Frontend: Error deleting source:', error);
+        alert(`Failed to delete source: ${error.error || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('❌ Error deleting source:', error);
+      console.error('❌ Frontend: Error deleting source:', error);
+      alert(`Failed to delete source: ${error.message}`);
     }
   };
 

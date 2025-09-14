@@ -125,20 +125,18 @@ export async function GET(request) {
     );
 
     const quizzes = result.rows.map(row => {
-      let quiz;
+      let content;
       try {
-        quiz = JSON.parse(row.content);
-        if (!quiz || !Array.isArray(quiz.questions)) {
-          throw new Error('Quiz content does not contain questions array');
-        }
+        content = JSON.parse(row.content);
+        console.log('🔧 Quiz GET: Parsed content for quiz', row.id, ':', typeof content, content?.type);
       } catch (parseError) {
         console.error(`Error parsing quiz for id ${row.id}:`, parseError);
-        quiz = { questions: [] };
+        content = { type: 'text_quiz', content: row.content };
       }
       return {
         id: row.id,
         title: row.title,
-        quiz,
+        content: content,
         createdAt: row.created_at
       };
     });

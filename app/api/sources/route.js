@@ -47,6 +47,18 @@ export async function POST(request) {
         }
         
         console.log(`✅ URL processed successfully using ${urlResult.source}`);
+        
+        // Check if the site is unsupported
+        if (urlResult.status === 'unsupported') {
+          console.log('⚠️ Sources API: Site is unsupported, setting status to unsupported');
+          // Create source with unsupported status
+          const result = await query(
+            `INSERT INTO sources (notebook_id, title, type, content, url, file_path, status)
+             VALUES ($1, $2, $3, $4, $5, $6, 'unsupported') RETURNING *`,
+            [notebookId, title, type, extractedContent, url, filePath]
+          );
+          return NextResponse.json(result.rows[0], { status: 201 });
+        }
       } catch (urlError) {
         console.error('❌ URL processing error:', urlError);
         return NextResponse.json({ 
@@ -112,6 +124,18 @@ export async function DELETE(request) {
 
     if (!sourceId) {
       return NextResponse.json({ error: 'Source ID is required' }, { status: 400 });
+    }
+
+    // Ensure all database tables exist
+    try {
+      const { initializeDatabase } = await import('../../../scripts/init-db.js');
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     console.log('🗑️ Sources API: Deleting source:', sourceId);
