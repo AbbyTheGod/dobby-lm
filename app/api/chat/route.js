@@ -50,7 +50,25 @@ export async function POST(request) {
     if (chunksResult.rows.length === 0) {
       console.log('❌ No relevant chunks found - Dobby has no information to answer');
       return NextResponse.json({
-        message: "I don't have any relevant information in the sources to answer your question.",
+        message: `I don't have any information to answer your question. This could be because:
+
+• No sources have been uploaded yet
+• The uploaded sites are not supported for scraping
+• The sources failed to process properly
+
+**Supported sites include:**
+• Wikipedia articles
+• News websites (BBC, CNN, Reuters)
+• Blog posts and articles
+• Documentation sites
+• Educational content
+
+**Not supported:**
+• JavaScript-heavy sites (Binance, social media)
+• Sites requiring login
+• Video platforms (YouTube, TikTok)
+
+Try uploading a supported website URL to get started!`,
         citations: []
       });
     }
