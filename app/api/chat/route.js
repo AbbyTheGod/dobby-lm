@@ -89,6 +89,15 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Error in chat:', error);
-    return NextResponse.json({ error: 'Failed to process chat message' }, { status: 500 });
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      notebookId,
+      userMessage: message
+    });
+    return NextResponse.json({ 
+      error: 'Failed to process chat message',
+      details: error.message 
+    }, { status: 500 });
   }
 }
