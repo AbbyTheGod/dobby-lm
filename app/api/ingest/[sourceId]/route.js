@@ -18,9 +18,12 @@ export async function POST(request, { params }) {
 
     const source = sourceResult.rows[0];
 
-    if (!source.content) {
+    if (!source.content || source.content.trim().length === 0) {
+      console.log(`❌ Source ${sourceId} has no content to process`);
       return NextResponse.json({ error: 'No content to process' }, { status: 400 });
     }
+    
+    console.log(`📄 Source ${sourceId} content length: ${source.content.length} characters`);
 
     // Update source status to processing
     await query(
@@ -34,6 +37,11 @@ export async function POST(request, { params }) {
       console.log(`📊 Created ${chunks.length} chunks for source ${sourceId}`);
       console.log(`📄 Source content length: ${source.content.length} characters`);
       console.log(`📝 First chunk preview: ${chunks[0]?.substring(0, 100)}...`);
+      
+      if (chunks.length === 0) {
+        console.log(`❌ No chunks created for source ${sourceId}`);
+        throw new Error('No chunks created from content');
+      }
 
       // Process each chunk
       const chunkPromises = chunks.map(async (chunkContent, index) => {
@@ -51,6 +59,10 @@ export async function POST(request, { params }) {
 
       await Promise.all(chunkPromises);
       console.log(`✅ Successfully processed all ${chunks.length} chunks for source ${sourceId}`);
+      
+      // Debug: Check if chunks were actually stored
+      const storedChunks = await query('SELECT * FROM chunks WHERE source_id = $1', [sourceId]);
+      console.log(`🔍 Debug: Found ${storedChunks.rows.length} chunks stored in database for source ${sourceId}`);
 
       // Update source status to completed
       await query(

@@ -26,6 +26,14 @@ export async function POST(request) {
     );
 
     console.log(`🔍 Found ${chunksResult.rows.length} relevant chunks for query: "${message}"`);
+    
+    // Debug: Check total chunks in database
+    const allChunks = await query('SELECT * FROM chunks');
+    console.log(`🔍 Debug: Total chunks in database: ${allChunks.rows.length}`);
+    
+    // Debug: Check chunks for this notebook
+    const notebookChunks = await query('SELECT c.*, s.notebook_id FROM chunks c JOIN sources s ON c.source_id = s.id WHERE s.notebook_id = $1', [notebookId]);
+    console.log(`🔍 Debug: Chunks for notebook ${notebookId}: ${notebookChunks.rows.length}`);
 
     if (chunksResult.rows.length === 0) {
       console.log('❌ No relevant chunks found - Dobby has no information to answer');
