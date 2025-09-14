@@ -78,8 +78,15 @@ export async function POST(request) {
 
     // Call Fireworks API
     console.log('🤖 Calling Fireworks API for Dobby response...');
-    const aiResponse = await callFireworksAPI(messages);
-    console.log(`✅ Dobby responded with ${aiResponse.length} characters`);
+    let aiResponse;
+    try {
+      aiResponse = await callFireworksAPI(messages);
+      console.log(`✅ Dobby responded with ${aiResponse.length} characters`);
+    } catch (fireworksError) {
+      console.error('❌ Fireworks API error:', fireworksError);
+      // Return a fallback response if Fireworks API fails
+      aiResponse = "I'm sorry, I'm having trouble connecting to my AI service right now. Please try again later.";
+    }
 
     // Save user message
     await query(
@@ -104,8 +111,7 @@ export async function POST(request) {
     console.error('Error details:', {
       message: error.message,
       stack: error.stack,
-      notebookId,
-      userMessage: message
+      notebookId
     });
     return NextResponse.json({ 
       error: 'Failed to process chat message',

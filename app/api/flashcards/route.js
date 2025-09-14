@@ -50,8 +50,17 @@ export async function POST(request) {
 
     // Call Fireworks API
     console.log('🤖 Flashcards API: Calling Fireworks API for flashcard generation...');
-    const aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
-    console.log(`✅ Flashcards API: Generated flashcards with ${aiResponse.length} characters`);
+    let aiResponse;
+    try {
+      aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
+      console.log(`✅ Flashcards API: Generated flashcards with ${aiResponse.length} characters`);
+    } catch (fireworksError) {
+      console.error('❌ Flashcards API: Fireworks API error:', fireworksError);
+      return NextResponse.json({ 
+        error: 'Failed to generate flashcards - AI service unavailable',
+        details: fireworksError.message 
+      }, { status: 500 });
+    }
 
     // Parse JSON response
     let flashcards;

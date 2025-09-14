@@ -50,8 +50,17 @@ export async function POST(request) {
 
     // Call Fireworks API
     console.log('🤖 Briefing API: Calling Fireworks API for summary generation...');
-    const aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
-    console.log(`✅ Briefing API: Generated summary with ${aiResponse.length} characters`);
+    let aiResponse;
+    try {
+      aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
+      console.log(`✅ Briefing API: Generated summary with ${aiResponse.length} characters`);
+    } catch (fireworksError) {
+      console.error('❌ Briefing API: Fireworks API error:', fireworksError);
+      return NextResponse.json({ 
+        error: 'Failed to generate briefing - AI service unavailable',
+        details: fireworksError.message 
+      }, { status: 500 });
+    }
 
     // Save briefing to database
     const result = await query(

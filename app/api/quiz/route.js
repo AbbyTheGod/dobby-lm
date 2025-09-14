@@ -50,8 +50,17 @@ export async function POST(request) {
 
     // Call Fireworks API
     console.log('🤖 Quiz API: Calling Fireworks API for quiz generation...');
-    const aiResponse = await callFireworksAPI(messages, { maxTokens: 3000 });
-    console.log(`✅ Quiz API: Generated quiz with ${aiResponse.length} characters`);
+    let aiResponse;
+    try {
+      aiResponse = await callFireworksAPI(messages, { maxTokens: 3000 });
+      console.log(`✅ Quiz API: Generated quiz with ${aiResponse.length} characters`);
+    } catch (fireworksError) {
+      console.error('❌ Quiz API: Fireworks API error:', fireworksError);
+      return NextResponse.json({ 
+        error: 'Failed to generate quiz - AI service unavailable',
+        details: fireworksError.message 
+      }, { status: 500 });
+    }
 
     // Parse JSON response
     let quiz;
