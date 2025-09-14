@@ -8,6 +8,7 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 - **AI-powered Chat**: Grounded Q&A with inline citations via Dobby AI
 - **Study Tools**: Generate flashcards, quizzes, and briefings
 - **Vector Search**: Semantic search using pgvector embeddings
+- **Deterministic Embeddings**: Hash-based mock ensures identical text produces the same vector during development
 - **Citation System**: Hover over citations to see source content
 - **Modern UI**: Clean 3-column layout with Tailwind CSS
 - **Security**: Latest dependencies with no known vulnerabilities
