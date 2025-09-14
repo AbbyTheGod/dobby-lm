@@ -114,6 +114,29 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
    - **PDF**: Upload a PDF file
 4. The source will be automatically processed and chunked
 
+### Supported Websites
+The URL scraper works best with traditional websites that serve content in the initial HTML:
+
+#### ✅ **Well-Supported Sites:**
+- **News & Media**: BBC News, CNN, Reuters, Associated Press, The Guardian
+- **Educational**: Wikipedia, Britannica, Khan Academy, MIT OpenCourseWare
+- **Blogs & Articles**: Medium, Substack, WordPress blogs, Ghost blogs
+- **Documentation**: GitHub README files, Stack Overflow, MDN Web Docs, Dev.to
+- **Business & Finance**: SEC filings, company websites, financial news
+- **Academic**: Research papers (arXiv, PubMed), university websites
+
+#### ❌ **Not Supported:**
+- **JavaScript-heavy sites**: Binance main site, social media platforms
+- **Single-page apps**: React/Vue applications
+- **E-commerce**: Amazon, eBay product pages
+- **Real-time data**: Stock tickers, live feeds
+
+#### 🧪 **Test Sites:**
+Try these URLs to test the scraper:
+- `https://en.wikipedia.org/wiki/Bitcoin`
+- `https://www.bbc.com/news/technology`
+- `https://medium.com/@username/article-title`
+
 ### Chatting
 1. Once sources are processed, start asking questions
 2. Responses include citations in format `[S{source_id}:{chunk_index}]`
