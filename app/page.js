@@ -6,6 +6,7 @@ import ChatInterface from './components/ChatInterface';
 import ToolsPanel from './components/ToolsPanel';
 import CreateNotebookModal from './components/CreateNotebookModal';
 import MobileLayout from './components/MobileLayout';
+import InitDatabaseButton from './components/InitDatabaseButton';
 
 export default function Home() {
   const [notebooks, setNotebooks] = useState([]);
@@ -147,6 +148,9 @@ export default function Home() {
           onSubmit={handleCreateNotebook}
         />
       )}
+
+      {/* Database Initialization Button */}
+      <InitDatabaseButton />
     </>
   );
 }
