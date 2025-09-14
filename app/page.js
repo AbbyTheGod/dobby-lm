@@ -49,7 +49,7 @@ export default function Home() {
       
       // Ensure minimum loading time for animation visibility
       const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 1000; // 1 second
+      const minLoadingTime = 500; // 0.5 seconds
       if (elapsedTime < minLoadingTime) {
         await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsedTime));
       }
@@ -109,9 +109,9 @@ export default function Home() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
         <div className="text-center space-y-6">
-          <div className="relative">
-            <div className="animate-spin-slow rounded-full h-16 w-16 border-4 border-primary/20 mx-auto"></div>
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-primary absolute top-0 left-1/2 transform -translate-x-1/2"></div>
+          <div className="relative mx-auto w-16 h-16">
+            <div className="animate-spin-slow rounded-full h-16 w-16 border-4 border-primary/20"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-primary absolute top-0 left-0"></div>
           </div>
           <div className="space-y-2">
             <h2 className="text-xl font-semibold text-foreground">Loading NotebookLM-lite</h2>
