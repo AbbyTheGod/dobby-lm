@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
 import { generateEmbedding, formatCitations } from '../../../lib/text-processing.js';
 import { callFireworksAPI, createChatPrompt } from '../../../lib/fireworks.js';
+import { initializeDatabase } from '../../../scripts/init-db.js';
 
 export async function POST(request) {
   try {
@@ -9,6 +10,17 @@ export async function POST(request) {
 
     if (!notebookId || !message) {
       return NextResponse.json({ error: 'Notebook ID and message are required' }, { status: 400 });
+    }
+
+    // Ensure all database tables exist
+    try {
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     // Generate embedding for the query

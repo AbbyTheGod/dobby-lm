@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
 import { callFireworksAPI, createSummaryPrompt } from '../../../lib/fireworks.js';
+import { initializeDatabase } from '../../../scripts/init-db.js';
 
 export async function POST(request) {
   try {
@@ -8,6 +9,17 @@ export async function POST(request) {
 
     if (!notebookId) {
       return NextResponse.json({ error: 'Notebook ID is required' }, { status: 400 });
+    }
+
+    // Ensure all database tables exist
+    try {
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     // Get all chunks from the notebook
@@ -69,6 +81,17 @@ export async function GET(request) {
 
     if (!notebookId) {
       return NextResponse.json({ error: 'Notebook ID is required' }, { status: 400 });
+    }
+
+    // Ensure all database tables exist
+    try {
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     const result = await query(

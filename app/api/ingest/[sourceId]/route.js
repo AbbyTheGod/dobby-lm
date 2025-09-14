@@ -1,10 +1,22 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../../lib/database.js';
 import { chunkText, generateEmbedding, estimateTokenCount } from '../../../../lib/text-processing.js';
+import { initializeDatabase } from '../../../../scripts/init-db.js';
 
 export async function POST(request, { params }) {
   try {
     const { sourceId } = params;
+
+    // Ensure all database tables exist
+    try {
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
+    }
 
     // Get source
     const sourceResult = await query(
