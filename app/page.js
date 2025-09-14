@@ -7,13 +7,13 @@ import ToolsPanel from './components/ToolsPanel';
 import CreateNotebookModal from './components/CreateNotebookModal';
 import AddSourceModal from './components/AddSourceModal';
 import MobileLayout from './components/MobileLayout';
-import InitDatabaseButton from './components/InitDatabaseButton';
 
 export default function Home() {
   const [notebooks, setNotebooks] = useState([]);
   const [selectedNotebook, setSelectedNotebook] = useState(null);
   const [sources, setSources] = useState([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAddSourceModal, setShowAddSourceModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -111,6 +111,8 @@ export default function Home() {
             onCreateNotebook={() => setShowCreateModal(true)}
             sources={sources}
             onSourceAdded={handleSourceAdded}
+            showAddSource={showAddSourceModal}
+            setShowAddSource={setShowAddSourceModal}
           />
         </div>
 
@@ -150,8 +152,6 @@ export default function Home() {
         />
       )}
 
-      {/* Database Initialization Button */}
-      <InitDatabaseButton />
     </>
   );
 }

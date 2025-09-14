@@ -11,9 +11,10 @@ export default function NotebookSidebar({
   onSelectNotebook, 
   onCreateNotebook,
   sources,
-  onSourceAdded 
+  onSourceAdded,
+  showAddSource,
+  setShowAddSource
 }) {
-  const [showAddSource, setShowAddSource] = useState(false);
 
   return (
     <div className="flex flex-col h-full">
