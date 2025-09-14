@@ -173,14 +173,7 @@
     @apply bg-gradient-to-r from-secondary to-secondary/80;
   }
 
-  /* Loading animations */
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-bounce-slow {
-    animation: bounce 2s infinite;
-  }
+  /* Loading animations - handled by Tailwind config */
 
   /* Custom animations */
   @keyframes slideInFromLeft {

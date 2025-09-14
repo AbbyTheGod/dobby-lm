@@ -29,6 +29,9 @@ export default function Home() {
 
   const fetchNotebooks = async () => {
     try {
+      // Ensure loading animation is visible for at least 1 second
+      const startTime = Date.now();
+      
       const response = await fetch('/api/notebooks');
       const data = await response.json();
       
@@ -42,6 +45,13 @@ export default function Home() {
       setNotebooks(data);
       if (data.length > 0 && !selectedNotebook) {
         setSelectedNotebook(data[0]);
+      }
+      
+      // Ensure minimum loading time for animation visibility
+      const elapsedTime = Date.now() - startTime;
+      const minLoadingTime = 1000; // 1 second
+      if (elapsedTime < minLoadingTime) {
+        await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsedTime));
       }
     } catch (error) {
       console.error('Error fetching notebooks:', error);

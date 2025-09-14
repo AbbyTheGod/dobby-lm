@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
+import { initializeDatabase } from '../../../scripts/init-db.js';
 
 export async function POST(request) {
   try {
@@ -11,20 +12,15 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
 
-    // Ensure tables exist before creating notebook
+    // Ensure all database tables exist
     try {
-      await query('SELECT 1 FROM notebooks LIMIT 1');
-    } catch (tableError) {
-      console.log('⚠️ Tables might not exist, creating notebooks table...');
-      await query(`
-        CREATE TABLE IF NOT EXISTS notebooks (
-          id SERIAL PRIMARY KEY,
-          title VARCHAR(255) NOT NULL,
-          description TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     const result = await query(
@@ -56,45 +52,15 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit')) || 20;
     const offset = parseInt(searchParams.get('offset')) || 0;
 
-    // First, try to check if tables exist
+    // Ensure all database tables exist
     try {
-      await query('SELECT 1 FROM notebooks LIMIT 1');
-    } catch (tableError) {
-      console.log('⚠️ Tables might not exist, initializing database...');
-      // Try to create tables if they don't exist
-      await query(`
-        CREATE TABLE IF NOT EXISTS notebooks (
-          id SERIAL PRIMARY KEY,
-          title VARCHAR(255) NOT NULL,
-          description TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-      await query(`
-        CREATE TABLE IF NOT EXISTS sources (
-          id SERIAL PRIMARY KEY,
-          notebook_id INTEGER REFERENCES notebooks(id) ON DELETE CASCADE,
-          title VARCHAR(255) NOT NULL,
-          type VARCHAR(50) NOT NULL,
-          content TEXT,
-          url VARCHAR(500),
-          file_path VARCHAR(500),
-          status VARCHAR(50) DEFAULT 'pending',
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-      await query(`
-        CREATE TABLE IF NOT EXISTS messages (
-          id SERIAL PRIMARY KEY,
-          notebook_id INTEGER REFERENCES notebooks(id) ON DELETE CASCADE,
-          role VARCHAR(20) NOT NULL,
-          content TEXT NOT NULL,
-          citations JSONB,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-      console.log('✅ Database tables created');
+      await initializeDatabase();
+    } catch (initError) {
+      console.error('❌ Database initialization failed:', initError);
+      return NextResponse.json({ 
+        error: 'Database initialization failed',
+        details: initError.message 
+      }, { status: 500 });
     }
 
     const result = await query(
