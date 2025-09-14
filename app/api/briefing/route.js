@@ -76,12 +76,22 @@ export async function GET(request) {
       [notebookId, 'briefing']
     );
 
-    const briefings = result.rows.map(row => ({
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      createdAt: row.created_at
-    }));
+    const briefings = result.rows.map(row => {
+      let parsed = {};
+      try {
+        parsed = JSON.parse(row.content);
+      } catch (parseError) {
+        console.error(`Error parsing briefing for id ${row.id}:`, parseError);
+        parsed = { content: row.content };
+      }
+      return {
+        id: row.id,
+        title: row.title,
+        content: parsed.content || '',
+        type: parsed.type,
+        createdAt: row.created_at
+      };
+    });
 
     return NextResponse.json(briefings);
 

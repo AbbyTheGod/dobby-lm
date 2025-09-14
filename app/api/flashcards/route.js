@@ -87,12 +87,24 @@ export async function GET(request) {
       [notebookId, 'flashcards']
     );
 
-    const flashcards = result.rows.map(row => ({
-      id: row.id,
-      title: row.title,
-      content: row.content,
-      createdAt: row.created_at
-    }));
+    const flashcards = result.rows.map(row => {
+      let cards = [];
+      try {
+        cards = JSON.parse(row.content);
+        if (!Array.isArray(cards)) {
+          throw new Error('Flashcards content is not an array');
+        }
+      } catch (parseError) {
+        console.error(`Error parsing flashcards for id ${row.id}:`, parseError);
+        cards = [];
+      }
+      return {
+        id: row.id,
+        title: row.title,
+        flashcards: cards,
+        createdAt: row.created_at
+      };
+    });
 
     return NextResponse.json(flashcards);
 
