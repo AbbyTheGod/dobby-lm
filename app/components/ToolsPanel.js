@@ -57,14 +57,19 @@ export default function ToolsPanel({ notebook }) {
       setLoading(true);
       const endpoint = type === 'briefing' ? '/api/briefing' : `/api/${type}`;
       
+      console.log(`🔧 Generating ${type} for notebook ${notebook.id}`);
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notebookId: notebook.id }),
       });
 
+      console.log(`📊 ${type} API response status:`, response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log(`✅ ${type} generated successfully:`, data);
         
         if (type === 'flashcards') {
           setFlashcards(prev => [data, ...prev]);
@@ -73,9 +78,14 @@ export default function ToolsPanel({ notebook }) {
         } else if (type === 'briefing') {
           setBriefings(prev => [data, ...prev]);
         }
+      } else {
+        const errorData = await response.json();
+        console.error(`❌ ${type} API error:`, errorData);
+        alert(`Failed to generate ${type}: ${errorData.error || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error(`Error generating ${type}:`, error);
+      console.error(`❌ Error generating ${type}:`, error);
+      alert(`Failed to generate ${type}: ${error.message}`);
     } finally {
       setLoading(false);
     }
