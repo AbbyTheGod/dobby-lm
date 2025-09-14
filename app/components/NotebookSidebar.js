@@ -50,11 +50,11 @@ export default function NotebookSidebar({
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-sm font-medium text-gray-600 dark:text-gray-400">Notebooks</h2>
             <span className="text-xs text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
-              {notebooks.length}
+              {Array.isArray(notebooks) ? notebooks.length : 0}
             </span>
           </div>
           <div className="space-y-1">
-            {notebooks.map((notebook) => (
+            {Array.isArray(notebooks) && notebooks.map((notebook) => (
               <div
                 key={notebook.id}
                 onClick={() => onSelectNotebook(notebook)}

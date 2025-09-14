@@ -101,7 +101,9 @@ export async function GET(request) {
       [notebookId]
     );
 
-    return NextResponse.json(result.rows);
+    // Ensure we always return an array
+    const rows = Array.isArray(result.rows) ? result.rows : [];
+    return NextResponse.json(rows);
   } catch (error) {
     console.error('❌ Sources API: Error fetching sources:', error);
     return NextResponse.json({ 

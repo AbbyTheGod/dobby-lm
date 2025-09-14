@@ -40,7 +40,9 @@ export async function GET(request) {
       [limit, offset]
     );
 
-    return NextResponse.json(result.rows);
+    // Ensure we always return an array
+    const rows = Array.isArray(result.rows) ? result.rows : [];
+    return NextResponse.json(rows);
   } catch (error) {
     console.error('Error fetching notebooks:', error);
     return NextResponse.json({ error: 'Failed to fetch notebooks' }, { status: 500 });

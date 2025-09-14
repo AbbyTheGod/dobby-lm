@@ -7,6 +7,7 @@ import ToolsPanel from './components/ToolsPanel';
 import CreateNotebookModal from './components/CreateNotebookModal';
 import AddSourceModal from './components/AddSourceModal';
 import MobileLayout from './components/MobileLayout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function Home() {
   const [notebooks, setNotebooks] = useState([]);
@@ -30,12 +31,21 @@ export default function Home() {
     try {
       const response = await fetch('/api/notebooks');
       const data = await response.json();
+      
+      // Check if the response is an error or not an array
+      if (!response.ok || !Array.isArray(data)) {
+        console.error('Error fetching notebooks:', data);
+        setNotebooks([]);
+        return;
+      }
+      
       setNotebooks(data);
       if (data.length > 0 && !selectedNotebook) {
         setSelectedNotebook(data[0]);
       }
     } catch (error) {
       console.error('Error fetching notebooks:', error);
+      setNotebooks([]);
     } finally {
       setLoading(false);
     }
@@ -45,9 +55,18 @@ export default function Home() {
     try {
       const response = await fetch(`/api/sources?notebookId=${notebookId}`);
       const data = await response.json();
+      
+      // Check if the response is an error or not an array
+      if (!response.ok || !Array.isArray(data)) {
+        console.error('Error fetching sources:', data);
+        setSources([]);
+        return;
+      }
+      
       setSources(data);
     } catch (error) {
       console.error('Error fetching sources:', error);
+      setSources([]);
     }
   };
 
@@ -99,7 +118,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       {/* Desktop Layout - Actual Google NotebookLM Style */}
       <div className="hidden lg:flex h-screen bg-white dark:bg-gray-900">
         {/* Left Sidebar - Notebooks & Sources */}
@@ -152,6 +171,6 @@ export default function Home() {
         />
       )}
 
-    </>
+    </ErrorBoundary>
   );
 }
