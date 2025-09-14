@@ -7,6 +7,7 @@ export default function ChatInterface({ notebook, sources }) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -16,6 +17,20 @@ export default function ChatInterface({ notebook, sources }) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleNewChat = () => {
+    setMessages([]);
+    setShowSuggestions(true);
+  };
+
+  const handleQuickAction = (action) => {
+    setInputMessage(action);
+    setShowSuggestions(false);
+    // Auto-send the message
+    setTimeout(() => {
+      handleSendMessage({ preventDefault: () => {} });
+    }, 100);
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -30,6 +45,7 @@ export default function ChatInterface({ notebook, sources }) {
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
+    setShowSuggestions(false);
     setIsLoading(true);
 
     try {
@@ -144,6 +160,15 @@ export default function ChatInterface({ notebook, sources }) {
                 <span>Ready</span>
               </div>
             )}
+            <button
+              onClick={handleNewChat}
+              className="flex items-center space-x-1 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              <span>New Chat</span>
+            </button>
           </div>
         </div>
       </div>

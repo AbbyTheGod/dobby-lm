@@ -97,7 +97,7 @@ export default function MessageBubble({ message, sources }) {
                 <p className="mb-0 text-primary-foreground leading-relaxed">{message.content}</p>
               ) : (
                 <div className="text-foreground leading-relaxed">
-                  {message.content.includes('**QUIZ QUESTIONS**') ? (
+                  {message.content.includes('QUIZ QUESTIONS') ? (
                     <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
                       {renderContentWithCitations(message.content)}
                     </pre>
