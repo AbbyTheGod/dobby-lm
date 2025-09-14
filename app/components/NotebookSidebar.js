@@ -156,7 +156,9 @@ export default function NotebookSidebar({
                           ? 'status-error'
                           : 'status-pending'
                       }`}>
-                        {source.status === 'unsupported' ? 'not supported' : source.status}
+                        {source.status === 'unsupported' ? 'not supported' : 
+                         source.status === 'failed' ? 'failed' : 
+                         source.status}
                       </span>
                       <button
                         onClick={(e) => {

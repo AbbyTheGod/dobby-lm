@@ -37,8 +37,15 @@ export async function POST(request) {
         new URL(url);
         
         // Use ScraperAPI for reliable web scraping
-        console.log('🚀 Using ScraperAPI for URL scraping');
+        console.log('🚀 Using ScraperAPI for URL scraping:', url);
         const urlResult = await extractTextFromURLScraperAPI(url);
+        
+        console.log('🔍 Scraping result:', {
+          title: urlResult.title,
+          contentLength: urlResult.content?.length || 0,
+          source: urlResult.source,
+          status: urlResult.status
+        });
         
         extractedContent = urlResult.content;
         // Use the extracted title if no title was provided
@@ -48,7 +55,7 @@ export async function POST(request) {
         
         console.log(`✅ URL processed successfully using ${urlResult.source}`);
         
-        // Check if the site is unsupported
+        // Check if the site is unsupported or scraping failed
         if (urlResult.status === 'unsupported') {
           console.log('⚠️ Sources API: Site is unsupported, setting status to unsupported');
           // Create source with unsupported status
@@ -56,6 +63,17 @@ export async function POST(request) {
             `INSERT INTO sources (notebook_id, title, type, content, url, file_path, status)
              VALUES ($1, $2, $3, $4, $5, $6, 'unsupported') RETURNING *`,
             [notebookId, title, type, extractedContent, url, filePath]
+          );
+          return NextResponse.json(result.rows[0], { status: 201 });
+        }
+        
+        // Check if scraping returned very little content (likely failed)
+        if (!extractedContent || extractedContent.length < 50) {
+          console.log('⚠️ Sources API: Scraping returned minimal content, setting status to unsupported');
+          const result = await query(
+            `INSERT INTO sources (notebook_id, title, type, content, url, file_path, status)
+             VALUES ($1, $2, $3, $4, $5, $6, 'unsupported') RETURNING *`,
+            [notebookId, title, type, 'This website is not supported for scraping. The content could not be retrieved properly.', url, filePath]
           );
           return NextResponse.json(result.rows[0], { status: 201 });
         }
