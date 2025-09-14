@@ -5,6 +5,7 @@ import NotebookSidebar from './components/NotebookSidebar';
 import ChatInterface from './components/ChatInterface';
 import ToolsPanel from './components/ToolsPanel';
 import CreateNotebookModal from './components/CreateNotebookModal';
+import AddSourceModal from './components/AddSourceModal';
 import MobileLayout from './components/MobileLayout';
 import InitDatabaseButton from './components/InitDatabaseButton';
 

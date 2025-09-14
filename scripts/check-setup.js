@@ -1,5 +1,6 @@
-const { Pool } = require('pg');
-require('dotenv').config();
+import { Pool } from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
 
 async function checkSetup() {
   console.log('🔍 Checking NotebookLM-lite setup...\n');

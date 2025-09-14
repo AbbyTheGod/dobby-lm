@@ -1,5 +1,6 @@
-const { callFireworksAPI } = require('../lib/fireworks');
-require('dotenv').config();
+import { callFireworksAPI } from '../lib/fireworks.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 async function testFireworksAPI() {
   console.log('🧪 Testing Fireworks API with Dobby Model\n');

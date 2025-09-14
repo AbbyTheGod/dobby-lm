@@ -9,7 +9,6 @@
     "lint": "next lint",
     "init-db": "node scripts/init-db.js",
     "check-setup": "node scripts/check-setup.js",
-    "test-scraping": "node scripts/test-scraping.js",
     "test-fireworks": "node scripts/test-fireworks.js"
   },
   "dependencies": {
