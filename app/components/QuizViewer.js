@@ -8,7 +8,9 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
 
-  const currentQuestion = selectedQuiz?.content?.questions?.[currentQuestionIndex];
+  // Handle both JSON format and text format
+  const isTextQuiz = selectedQuiz?.content?.type === 'text_quiz' || typeof selectedQuiz?.content === 'string';
+  const currentQuestion = isTextQuiz ? null : selectedQuiz?.content?.questions?.[currentQuestionIndex];
 
   const handleAnswerSelect = (questionId, answer) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));

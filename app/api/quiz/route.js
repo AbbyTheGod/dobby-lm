@@ -69,17 +69,15 @@ export async function POST(request) {
       }, { status: 500 });
     }
 
-    // Parse JSON response
-    let quiz;
-    try {
-      quiz = JSON.parse(aiResponse);
-      if (!quiz.questions || !Array.isArray(quiz.questions)) {
-        throw new Error('Response does not contain questions array');
-      }
-    } catch (parseError) {
-      console.error('Error parsing quiz JSON:', parseError);
-      return NextResponse.json({ error: 'Failed to generate valid quiz' }, { status: 500 });
-    }
+    // Use the AI response directly as quiz content
+    console.log('🔧 Quiz API: Using AI response as quiz content');
+    console.log('🔧 Quiz API: Response length:', aiResponse.length);
+    
+    // Create a simple quiz object with the AI response
+    const quiz = {
+      content: aiResponse,
+      type: 'text_quiz'
+    };
 
     // Save quiz to database
     const result = await query(
