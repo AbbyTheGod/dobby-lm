@@ -11,7 +11,8 @@ export default function MobileLayout({
   onSelectNotebook, 
   onCreateNotebook,
   sources,
-  onSourceAdded 
+  onSourceAdded,
+  onSourceDeleted
 }) {
   const [activeView, setActiveView] = useState('chat'); // 'sidebar', 'chat', 'tools'
 
@@ -82,6 +83,7 @@ export default function MobileLayout({
               onCreateNotebook={onCreateNotebook}
               sources={sources}
               onSourceAdded={onSourceAdded}
+              onSourceDeleted={onSourceDeleted}
             />
           </div>
         )}

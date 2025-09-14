@@ -105,6 +105,27 @@ export default function Home() {
     }
   };
 
+  const handleSourceDeleted = async (sourceId) => {
+    try {
+      const response = await fetch(`/api/sources?sourceId=${sourceId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Refresh sources list
+        if (selectedNotebook) {
+          fetchSources(selectedNotebook.id);
+        }
+        console.log('✅ Source deleted successfully');
+      } else {
+        const error = await response.json();
+        console.error('❌ Error deleting source:', error);
+      }
+    } catch (error) {
+      console.error('❌ Error deleting source:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -140,6 +161,7 @@ export default function Home() {
             onCreateNotebook={() => setShowCreateModal(true)}
             sources={sources}
             onSourceAdded={handleSourceAdded}
+            onSourceDeleted={handleSourceDeleted}
             showAddSource={showAddSourceModal}
             setShowAddSource={setShowAddSourceModal}
           />
@@ -170,6 +192,7 @@ export default function Home() {
           onCreateNotebook={() => setShowCreateModal(true)}
           sources={sources}
           onSourceAdded={handleSourceAdded}
+          onSourceDeleted={handleSourceDeleted}
         />
       </div>
 

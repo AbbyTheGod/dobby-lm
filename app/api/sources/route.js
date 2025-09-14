@@ -104,3 +104,39 @@ export async function GET(request) {
     }, { status: 500 });
   }
 }
+
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const sourceId = searchParams.get('sourceId');
+
+    if (!sourceId) {
+      return NextResponse.json({ error: 'Source ID is required' }, { status: 400 });
+    }
+
+    console.log('🗑️ Sources API: Deleting source:', sourceId);
+
+    // Delete associated chunks first
+    await query('DELETE FROM chunks WHERE source_id = $1', [sourceId]);
+    console.log('🗑️ Sources API: Deleted associated chunks');
+
+    // Delete the source
+    const result = await query('DELETE FROM sources WHERE id = $1 RETURNING *', [sourceId]);
+    
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: 'Source not found' }, { status: 404 });
+    }
+
+    console.log('✅ Sources API: Source deleted successfully');
+    return NextResponse.json({ 
+      message: 'Source deleted successfully',
+      deletedSource: result.rows[0]
+    });
+  } catch (error) {
+    console.error('❌ Sources API: Error deleting source:', error);
+    return NextResponse.json({ 
+      error: 'Failed to delete source', 
+      details: error.message 
+    }, { status: 500 });
+  }
+}
