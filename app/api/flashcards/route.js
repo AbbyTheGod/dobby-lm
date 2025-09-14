@@ -72,13 +72,23 @@ export async function POST(request) {
     // Parse JSON response
     let flashcards;
     try {
+      console.log('🔧 Flashcards API: Attempting to parse JSON response...');
+      console.log('🔧 Flashcards API: Raw response length:', aiResponse.length);
+      console.log('🔧 Flashcards API: First 500 chars:', aiResponse.substring(0, 500));
+      
       flashcards = JSON.parse(aiResponse);
       if (!Array.isArray(flashcards)) {
         throw new Error('Response is not an array');
       }
+      console.log('✅ Flashcards API: Successfully parsed JSON, got', flashcards.length, 'flashcards');
     } catch (parseError) {
-      console.error('Error parsing flashcards JSON:', parseError);
-      return NextResponse.json({ error: 'Failed to generate valid flashcards' }, { status: 500 });
+      console.error('❌ Flashcards API: Error parsing flashcards JSON:', parseError);
+      console.error('❌ Flashcards API: Raw response that failed to parse:', aiResponse);
+      return NextResponse.json({ 
+        error: 'Failed to generate valid flashcards',
+        details: parseError.message,
+        rawResponse: aiResponse.substring(0, 200) + '...'
+      }, { status: 500 });
     }
 
     // Save flashcards to database

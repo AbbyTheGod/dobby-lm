@@ -70,6 +70,14 @@ export default function ToolsPanel({ notebook }) {
       if (response.ok) {
         const data = await response.json();
         console.log(`✅ ${type} generated successfully:`, data);
+        console.log(`🔧 ${type} data structure:`, {
+          id: data.id,
+          title: data.title,
+          hasQuiz: !!data.quiz,
+          hasContent: !!data.content,
+          quizKeys: data.quiz ? Object.keys(data.quiz) : 'no quiz',
+          contentKeys: data.content ? Object.keys(data.content) : 'no content'
+        });
         
         if (type === 'flashcards') {
           setFlashcards(prev => [data, ...prev]);
