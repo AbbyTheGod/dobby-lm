@@ -12,6 +12,11 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
   const isTextQuiz = selectedQuiz?.content?.type === 'text_quiz' || typeof selectedQuiz?.content === 'string';
   const currentQuestion = isTextQuiz ? null : selectedQuiz?.content?.questions?.[currentQuestionIndex];
 
+  // Debug logging
+  console.log('🔧 QuizViewer: Received quizzes:', quizzes);
+  console.log('🔧 QuizViewer: Selected quiz:', selectedQuiz);
+  console.log('🔧 QuizViewer: Is text quiz:', isTextQuiz);
+
   const handleAnswerSelect = (questionId, answer) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
@@ -31,6 +36,9 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
   };
 
   const handleQuizSelect = (quiz) => {
+    console.log('🔧 QuizViewer: Selected quiz:', quiz);
+    console.log('🔧 QuizViewer: Quiz content type:', typeof quiz.content);
+    console.log('🔧 QuizViewer: Is text quiz:', isTextQuiz);
     setSelectedQuiz(quiz);
     setCurrentQuestionIndex(0);
     setAnswers({});
@@ -103,7 +111,18 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
       </div>
 
       {/* Quiz Content */}
-      {selectedQuiz && !showResults && currentQuestion && (
+      {selectedQuiz && !showResults && (
+        <>
+          {/* Text Quiz Display */}
+          {isTextQuiz ? (
+            <div className="bg-white rounded-lg border border-secondary-200 p-6">
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {typeof selectedQuiz.content === 'string' ? selectedQuiz.content : selectedQuiz.content.content}
+                </pre>
+              </div>
+            </div>
+          ) : currentQuestion && (
         <div className="bg-white rounded-lg border border-secondary-200 p-6">
           <div className="mb-4">
             <div className="text-sm text-secondary-500 mb-2">
@@ -162,6 +181,8 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
             </button>
           </div>
         </div>
+          )}
+        </>
       )}
 
       {/* Results */}
