@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
-import { callFireworksAPI, createQuizPrompt } from '../../../lib/fireworks';
+import { callFireworksAPI, createQuizPrompt } from '../../../lib/fireworks.js';
 
 export async function POST(request) {
   try {
@@ -20,7 +20,10 @@ export async function POST(request) {
       [notebookId]
     );
 
+    console.log(`📊 Quiz API: Found ${chunksResult.rows.length} chunks for notebook ${notebookId}`);
+
     if (chunksResult.rows.length === 0) {
+      console.log('❌ Quiz API: No content found in notebook');
       return NextResponse.json({ error: 'No content found in notebook' }, { status: 400 });
     }
 
@@ -30,36 +33,13 @@ export async function POST(request) {
       return `[Source ${index + 1} - ${chunk.source_title}]\n${chunk.content}`;
     }).join('\n\n');
 
-    // Create quiz prompt with question count
-    const prompt = `Create a quiz with approximately ${questionCount} questions from the following sources. Return a JSON object with "questions" array. Each question should have "type" (either "multiple_choice" or "short_answer"), "question", "options" (for multiple choice), and "answer". Include citations [S{source_id}:{chunk_index}] in answers.
-
-Sources:
-${content}
-
-Return format:
-{
-  "questions": [
-    {
-      "type": "multiple_choice",
-      "question": "Question text",
-      "options": ["A", "B", "C", "D"],
-      "answer": "Correct answer with citation [S{source_id}:{chunk_index}]"
-    },
-    {
-      "type": "short_answer",
-      "question": "Question text",
-      "answer": "Answer with citation [S{source_id}:{chunk_index}]"
-    }
-  ]
-}`;
-
-    const messages = [
-      { role: 'system', content: 'You are an expert at creating educational quizzes. Always return valid JSON.' },
-      { role: 'user', content: prompt }
-    ];
+    // Create quiz prompt using the proper function
+    const messages = createQuizPrompt(content);
 
     // Call Fireworks API
+    console.log('🤖 Quiz API: Calling Fireworks API for quiz generation...');
     const aiResponse = await callFireworksAPI(messages, { maxTokens: 3000 });
+    console.log(`✅ Quiz API: Generated quiz with ${aiResponse.length} characters`);
 
     // Parse JSON response
     let quiz;

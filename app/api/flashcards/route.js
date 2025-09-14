@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
-import { callFireworksAPI, createFlashcardPrompt } from '../../../lib/fireworks';
+import { callFireworksAPI, createFlashcardPrompt } from '../../../lib/fireworks.js';
 
 export async function POST(request) {
   try {
@@ -20,7 +20,10 @@ export async function POST(request) {
       [notebookId]
     );
 
+    console.log(`📊 Flashcards API: Found ${chunksResult.rows.length} chunks for notebook ${notebookId}`);
+
     if (chunksResult.rows.length === 0) {
+      console.log('❌ Flashcards API: No content found in notebook');
       return NextResponse.json({ error: 'No content found in notebook' }, { status: 400 });
     }
 
@@ -34,7 +37,9 @@ export async function POST(request) {
     const messages = createFlashcardPrompt(content);
 
     // Call Fireworks API
+    console.log('🤖 Flashcards API: Calling Fireworks API for flashcard generation...');
     const aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
+    console.log(`✅ Flashcards API: Generated flashcards with ${aiResponse.length} characters`);
 
     // Parse JSON response
     let flashcards;

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
-import { callFireworksAPI, createSummaryPrompt } from '../../../lib/fireworks';
+import { callFireworksAPI, createSummaryPrompt } from '../../../lib/fireworks.js';
 
 export async function POST(request) {
   try {
@@ -20,7 +20,10 @@ export async function POST(request) {
       [notebookId]
     );
 
+    console.log(`📊 Briefing API: Found ${chunksResult.rows.length} chunks for notebook ${notebookId}`);
+
     if (chunksResult.rows.length === 0) {
+      console.log('❌ Briefing API: No content found in notebook');
       return NextResponse.json({ error: 'No content found in notebook' }, { status: 400 });
     }
 
@@ -34,7 +37,9 @@ export async function POST(request) {
     const messages = createSummaryPrompt(content, type);
 
     // Call Fireworks API
+    console.log('🤖 Briefing API: Calling Fireworks API for summary generation...');
     const aiResponse = await callFireworksAPI(messages, { maxTokens: 2000 });
+    console.log(`✅ Briefing API: Generated summary with ${aiResponse.length} characters`);
 
     // Save briefing to database
     const result = await query(

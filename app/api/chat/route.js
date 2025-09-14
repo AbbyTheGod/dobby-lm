@@ -25,7 +25,10 @@ export async function POST(request) {
       [notebookId, JSON.stringify(queryEmbedding), topK]
     );
 
+    console.log(`🔍 Found ${chunksResult.rows.length} relevant chunks for query: "${message}"`);
+
     if (chunksResult.rows.length === 0) {
+      console.log('❌ No relevant chunks found - Dobby has no information to answer');
       return NextResponse.json({
         message: "I don't have any relevant information in the sources to answer your question.",
         citations: []
@@ -47,11 +50,16 @@ export async function POST(request) {
 
     const citationsText = formatCitations(citations);
 
+    console.log(`📚 Using ${chunksResult.rows.length} chunks as context for Dobby`);
+    console.log(`🔗 Citations: ${citationsText}`);
+
     // Create chat prompt
     const messages = createChatPrompt(message, context, citationsText);
 
     // Call Fireworks API
+    console.log('🤖 Calling Fireworks API for Dobby response...');
     const aiResponse = await callFireworksAPI(messages);
+    console.log(`✅ Dobby responded with ${aiResponse.length} characters`);
 
     // Save user message
     await query(

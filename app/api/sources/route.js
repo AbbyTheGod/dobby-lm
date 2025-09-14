@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
 import { extractTextFromPDF, extractTextFromURL } from '../../../lib/text-processing.js';
-import { extractTextFromURL as extractTextFromURLSimple } from '../../../lib/simple-scraping.js';
-import { extractTextFromURLWithAbstractAPI } from '../../../lib/abstract-scraping.js';
+import { extractTextFromURL as extractTextFromURLScraperAPI } from '../../../lib/simple-scraping.js';
 
 export async function POST(request) {
   try {
@@ -37,16 +36,9 @@ export async function POST(request) {
         // Validate URL format
         new URL(url);
         
-        let urlResult;
-        try {
-          // Try Abstract API first
-          console.log('🚀 Attempting to use Abstract API for URL scraping');
-          urlResult = await extractTextFromURLWithAbstractAPI(url);
-        } catch (abstractError) {
-          console.log('⚠️ Abstract API failed, falling back to simple scraping:', abstractError.message);
-          // Fallback to simple scraping
-          urlResult = await extractTextFromURLSimple(url);
-        }
+        // Use ScraperAPI for reliable web scraping
+        console.log('🚀 Using ScraperAPI for URL scraping');
+        const urlResult = await extractTextFromURLScraperAPI(url);
         
         extractedContent = urlResult.content;
         // Use the extracted title if no title was provided

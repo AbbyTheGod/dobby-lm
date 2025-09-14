@@ -31,12 +31,16 @@ export async function POST(request, { params }) {
     try {
       // Chunk the content
       const chunks = chunkText(source.content);
-      console.log(`Created ${chunks.length} chunks for source ${sourceId}`);
+      console.log(`📊 Created ${chunks.length} chunks for source ${sourceId}`);
+      console.log(`📄 Source content length: ${source.content.length} characters`);
+      console.log(`📝 First chunk preview: ${chunks[0]?.substring(0, 100)}...`);
 
       // Process each chunk
       const chunkPromises = chunks.map(async (chunkContent, index) => {
         const tokenCount = estimateTokenCount(chunkContent);
         const embedding = await generateEmbedding(chunkContent);
+        
+        console.log(`🔧 Processing chunk ${index + 1}/${chunks.length} (${tokenCount} tokens)`);
 
         return query(
           `INSERT INTO chunks (source_id, content, chunk_index, token_count, embedding)
@@ -46,6 +50,7 @@ export async function POST(request, { params }) {
       });
 
       await Promise.all(chunkPromises);
+      console.log(`✅ Successfully processed all ${chunks.length} chunks for source ${sourceId}`);
 
       // Update source status to completed
       await query(
