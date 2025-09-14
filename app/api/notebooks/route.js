@@ -5,6 +5,8 @@ export async function POST(request) {
   try {
     const { title, description } = await request.json();
     
+    console.log('📝 Creating notebook:', { title, description });
+    
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
@@ -14,10 +16,19 @@ export async function POST(request) {
       [title, description || '']
     );
 
+    console.log('✅ Notebook created:', result.rows[0]);
     return NextResponse.json(result.rows[0], { status: 201 });
   } catch (error) {
-    console.error('Error creating notebook:', error);
-    return NextResponse.json({ error: 'Failed to create notebook' }, { status: 500 });
+    console.error('❌ Error creating notebook:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail
+    });
+    return NextResponse.json({ 
+      error: 'Failed to create notebook',
+      details: error.message 
+    }, { status: 500 });
   }
 }
 
