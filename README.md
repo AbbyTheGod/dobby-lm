@@ -4,42 +4,42 @@ A lightweight AI-powered notebook application built with Next.js and session-bas
 
 ## 🚀 Live Demo
 
-**[Try DobbyLM Live](https://your-vercel-url.vercel.app)** - Ready to use!
+**Try DobbyLM Live** - Ready to use!
 
 *All API keys are already configured - just start chatting!*
 
-## Features
+## ✨ Features
 
-- **Multi-source Support**: Paste text or add URLs (PDF support temporarily disabled for security)
-- **AI-powered Chat**: Grounded Q&A with inline citations via Dobby AI
-- **Study Tools**: Generate quizzes and briefings
-- **Vector Search**: Semantic search using in-memory embeddings
-- **Deterministic Embeddings**: Hash-based mock ensures identical text produces the same vector during development
-- **Citation System**: Hover over citations to see source content
-- **Modern UI**: Clean 3-column layout with Tailwind CSS and dark mode support
-- **Smart Formatting**: AI responses with proper spacing and whitespace preservation
-- **Security**: Latest dependencies with no known vulnerabilities
-- **Testing Tools**: Built-in scripts to verify setup and API connections
+- 📄 **Multi-source Support**: Paste text or add URLs (PDF support temporarily disabled for security)
+- 🤖 **AI-powered Chat**: Grounded Q&A with inline citations via Dobby AI
+- 📚 **Study Tools**: Generate quizzes and briefings
+- 🔍 **Vector Search**: Semantic search using in-memory embeddings
+- 🎯 **Deterministic Embeddings**: Hash-based mock ensures identical text produces the same vector during development
+- 📖 **Citation System**: Hover over citations to see source content
+- 🎨 **Modern UI**: Clean 3-column layout with Tailwind CSS and dark mode support
+- ✨ **Smart Formatting**: AI responses with proper spacing and whitespace preservation
+- 🔒 **Security**: Latest dependencies with no known vulnerabilities
+- 🛠️ **Testing Tools**: Built-in scripts to verify setup and API connections
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15 (App Router), React, Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Storage**: Session-based in-memory database (clears on refresh)
-- **AI**: Fireworks API (Dobby 8B model)
-- **Embeddings**: BGE-small-en model via Transformers.js
-- **Web Scraping**: ScraperAPI for reliable content extraction
+- ⚛️ **Frontend**: Next.js 15 (App Router), React, Tailwind CSS
+- 🔧 **Backend**: Next.js API Routes
+- 💾 **Storage**: Session-based in-memory database (clears on refresh)
+- 🤖 **AI**: Fireworks API (Dobby 8B model)
+- 🧠 **Embeddings**: BGE-small-en model via Transformers.js
+- 🌐 **Web Scraping**: ScraperAPI for reliable content extraction
 
 
 
-## Usage
+## 📖 Usage
 
-### Creating a Notebook
+### 📝 Creating a Notebook
 1. Click "New" to create a new notebook
 2. Enter a title and optional description
 3. Click "Create"
 
-### Adding Sources
+### 📄 Adding Sources
 1. Select your notebook
 2. Click "Add Source" in the sources panel
 3. Choose source type:
@@ -47,15 +47,15 @@ A lightweight AI-powered notebook application built with Next.js and session-bas
    - **URL**: Enter a web page URL
 4. The source will be automatically processed and chunked
 
-### Supported Websites
+### 🌐 Supported Websites
 Works with traditional websites (Wikipedia, news sites, blogs). Not supported: JavaScript-heavy sites, SPAs, e-commerce.
 
-### Chatting
+### 💬 Chatting
 1. Once sources are processed, start asking questions
 2. Responses include citations in format `[S{source_id}:{chunk_index}]`
 3. Hover over citations to see the original content
 
-### Study Tools
+### 📚 Study Tools
 1. Use the right panel to generate:
    - **Quizzes**: Multiple choice and short answer questions
    - **Briefings**: Comprehensive summaries
