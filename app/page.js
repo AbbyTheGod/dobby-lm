@@ -63,19 +63,24 @@ export default function Home() {
 
   const fetchSources = async (notebookId) => {
     try {
+      console.log('🔍 Frontend: Fetching sources for notebook:', notebookId);
       const response = await fetch(`/api/sources?notebookId=${notebookId}`);
       const data = await response.json();
       
+      console.log('📋 Frontend: Sources response status:', response.status);
+      console.log('📋 Frontend: Sources data received:', data);
+      
       // Check if the response is an error or not an array
       if (!response.ok || !Array.isArray(data)) {
-        console.error('Error fetching sources:', data);
+        console.error('❌ Frontend: Error fetching sources:', data);
         setSources([]);
         return;
       }
       
+      console.log('✅ Frontend: Setting sources:', data.length, 'sources');
       setSources(data);
     } catch (error) {
-      console.error('Error fetching sources:', error);
+      console.error('❌ Frontend: Error fetching sources:', error);
       setSources([]);
     }
   };
@@ -129,7 +134,9 @@ export default function Home() {
         console.log('✅ Frontend: Source deleted successfully:', result);
         // Refresh sources list
         if (selectedNotebook) {
-          fetchSources(selectedNotebook.id);
+          console.log('🔄 Frontend: Refreshing sources list...');
+          await fetchSources(selectedNotebook.id);
+          console.log('✅ Frontend: Sources list refreshed');
         }
       } else {
         const error = await response.json();
