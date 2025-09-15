@@ -54,7 +54,7 @@ export default function MobileLayout({
             </svg>
           </div>
           <div>
-            <h1 className="text-lg font-bold text-foreground">NotebookLM-lite</h1>
+            <h1 className="text-lg font-bold text-foreground">DobbyLM</h1>
             <p className="text-xs text-muted-foreground">AI-powered workspace</p>
           </div>
         </div>

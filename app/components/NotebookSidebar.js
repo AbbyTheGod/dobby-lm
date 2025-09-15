@@ -29,7 +29,7 @@ export default function NotebookSidebar({
               </svg>
             </div>
             <h1 className="text-lg font-medium text-gray-900 dark:text-white">
-              NotebookLM
+              DobbyLM
             </h1>
           </div>
           <ThemeToggle />

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function checkSetup() {
-  console.log('🔍 Checking NotebookLM-lite setup...\n');
+  console.log('🔍 Checking DobbyLM setup...\n');
 
   // Check environment variables
   console.log('📋 Environment Variables:');

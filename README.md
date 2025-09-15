@@ -1,4 +1,4 @@
-# NotebookLM-lite
+# DobbyLM
 
 A lightweight AI-powered notebook application built with Next.js, Express, and PostgreSQL with pgvector for embeddings. Features grounded Q&A with citations, study tools (flashcards, quizzes, briefings), and support for multiple source types (PDF, text, URLs).
 
@@ -10,7 +10,8 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 - **Vector Search**: Semantic search using pgvector embeddings
 - **Deterministic Embeddings**: Hash-based mock ensures identical text produces the same vector during development
 - **Citation System**: Hover over citations to see source content
-- **Modern UI**: Clean 3-column layout with Tailwind CSS
+- **Modern UI**: Clean 3-column layout with Tailwind CSS and dark mode support
+- **Smart Formatting**: AI responses with proper spacing and whitespace preservation
 - **Security**: Latest dependencies with no known vulnerabilities
 - **Testing Tools**: Built-in scripts to verify setup and API connections
 
@@ -36,7 +37,7 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd notebooklm-lite
+   cd dobbylm
    ```
 
 2. **Install dependencies**
@@ -60,7 +61,7 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
    psql -U postgres
    
    # Create database
-   CREATE DATABASE notebooklm_lite;
+   CREATE DATABASE dobbylm;
    \q
    ```
 
@@ -71,7 +72,7 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
    
    Edit `.env.local` with your configuration:
    ```env
-   DATABASE_URL=postgresql://username:password@localhost:5432/notebooklm_lite
+   DATABASE_URL=postgresql://username:password@localhost:5432/dobbylm
    FIREWORKS_API_KEY=your_fireworks_api_key_here
    
    # Required: Web scraping API for URL content extraction
@@ -290,6 +291,13 @@ MIT License - see LICENSE file for details.
 5. Submit a pull request
 
 ## Recent Updates
+
+### UI/UX Improvements
+- ✅ **Fixed** whitespace preservation in AI chat responses
+- ✅ **Added** complete dark mode support across all components
+- ✅ **Improved** text formatting with proper spacing between sections
+- ✅ **Enhanced** visual consistency with blue primary color headings
+- ✅ **Fixed** collapsed text issues in bullet points and numbered lists
 
 ### Security & Stability Improvements
 - ✅ **Removed** vulnerable `pdf-parse` dependency

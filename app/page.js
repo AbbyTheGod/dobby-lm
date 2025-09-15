@@ -141,7 +141,7 @@ export default function Home() {
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-primary absolute top-0 left-0"></div>
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-foreground">Loading NotebookLM-lite</h2>
+            <h2 className="text-xl font-semibold text-foreground">Loading DobbyLM</h2>
             <p className="text-muted-foreground">Preparing your AI-powered workspace...</p>
           </div>
           <div className="flex space-x-1 justify-center">

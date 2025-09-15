@@ -1,7 +1,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'NotebookLM-lite',
+  title: 'DobbyLM',
   description: 'AI-powered notebook with grounded Q&A and study tools',
 }
 

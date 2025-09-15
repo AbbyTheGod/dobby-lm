@@ -153,7 +153,7 @@ export default function ChatInterface({ notebook, sources }) {
           </div>
           <div className="space-y-3">
             <h2 className="text-2xl font-medium text-gray-900 dark:text-white">
-              Welcome to NotebookLM
+              Welcome to DobbyLM
             </h2>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               Select a notebook from the sidebar to start having conversations with your AI assistant. 
