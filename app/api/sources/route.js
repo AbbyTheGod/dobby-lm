@@ -135,47 +135,26 @@ export async function DELETE(request) {
       return NextResponse.json({ error: 'Source ID is required' }, { status: 400 });
     }
 
-    // Ensure all database tables exist
-    try {
-      const { initializeDatabase } = await import('../../../scripts/init-db.js');
-      await initializeDatabase();
-    } catch (initError) {
-      console.error('❌ Database initialization failed:', initError);
-      return NextResponse.json({ 
-        error: 'Database initialization failed',
-        details: initError.message 
-      }, { status: 500 });
-    }
+    // Database should already be initialized, no need to reinitialize on every delete
 
     console.log('🗑️ Sources API: Deleting source:', sourceId);
-    console.log('🗑️ Sources API: Source ID type:', typeof sourceId);
     
     // Convert sourceId to string to ensure consistent type
     const sourceIdStr = String(sourceId);
-    console.log('🗑️ Sources API: Converted source ID:', sourceIdStr);
-
-    // First, check what sources exist in the database
-    const allSources = await query('SELECT id, title, notebook_id FROM sources ORDER BY created_at DESC LIMIT 10');
-    console.log('🔍 Sources API: All sources in database:', allSources.rows.map(s => ({ id: s.id, title: s.title, notebook_id: s.notebook_id })));
 
     // Check if the specific source exists
     const sourceCheck = await query('SELECT * FROM sources WHERE id = $1', [sourceIdStr]);
-    console.log('🔍 Sources API: Source check result:', sourceCheck.rows.length, 'rows found');
     
     if (sourceCheck.rows.length === 0) {
       console.log('❌ Sources API: Source not found in database');
       return NextResponse.json({ error: 'Source not found' }, { status: 404 });
     }
     
-    console.log('✅ Sources API: Source found, proceeding with deletion');
-
     // Delete associated chunks first
-    const chunksResult = await query('DELETE FROM chunks WHERE source_id = $1', [sourceIdStr]);
-    console.log('🗑️ Sources API: Deleted', chunksResult.rowCount, 'associated chunks');
+    await query('DELETE FROM chunks WHERE source_id = $1', [sourceIdStr]);
 
     // Delete the source
     const result = await query('DELETE FROM sources WHERE id = $1 RETURNING *', [sourceIdStr]);
-    console.log('🗑️ Sources API: Source deletion result:', result.rowCount, 'rows deleted');
 
     console.log('✅ Sources API: Source deleted successfully');
     return NextResponse.json({ 
