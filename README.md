@@ -1,12 +1,12 @@
 # DobbyLM
 
-A lightweight AI-powered notebook application built with Next.js, Express, and PostgreSQL with pgvector for embeddings. Features grounded Q&A with citations, study tools (flashcards, quizzes, briefings), and support for multiple source types (PDF, text, URLs).
+A lightweight AI-powered notebook application built with Next.js, Express, and PostgreSQL with pgvector for embeddings. Features grounded Q&A with citations, study tools (quizzes and briefings), and support for multiple source types (text and URLs).
 
 ## Features
 
 - **Multi-source Support**: Paste text or add URLs (PDF support temporarily disabled for security)
 - **AI-powered Chat**: Grounded Q&A with inline citations via Dobby AI
-- **Study Tools**: Generate flashcards, quizzes, and briefings
+- **Study Tools**: Generate quizzes and briefings
 - **Vector Search**: Semantic search using pgvector embeddings
 - **Deterministic Embeddings**: Hash-based mock ensures identical text produces the same vector during development
 - **Citation System**: Hover over citations to see source content
@@ -112,7 +112,6 @@ A lightweight AI-powered notebook application built with Next.js, Express, and P
 3. Choose source type:
    - **Text**: Paste content directly
    - **URL**: Enter a web page URL
-   - **PDF**: Upload a PDF file
 4. The source will be automatically processed and chunked
 
 ### Supported Websites
@@ -145,7 +144,6 @@ Try these URLs to test the scraper:
 
 ### Study Tools
 1. Use the right panel to generate:
-   - **Flashcards**: Interactive study cards
    - **Quizzes**: Multiple choice and short answer questions
    - **Briefings**: Comprehensive summaries
 2. Click "Generate" buttons to create new study materials
@@ -158,7 +156,6 @@ Try these URLs to test the scraper:
 - `GET /api/sources` - List sources for a notebook
 - `POST /api/ingest/:sourceId` - Process and embed a source
 - `POST /api/chat` - Send a chat message
-- `POST /api/flashcards` - Generate flashcards
 - `POST /api/quiz` - Generate a quiz
 - `POST /api/briefing` - Generate a briefing
 
@@ -166,10 +163,10 @@ Try these URLs to test the scraper:
 
 ### Tables
 - `notebooks` - User notebooks
-- `sources` - Source documents (PDF, text, URL)
+- `sources` - Source documents (text, URL)
 - `chunks` - Text chunks with vector embeddings
 - `messages` - Chat conversation history
-- `study_tools` - Generated flashcards, quizzes, briefings
+- `study_tools` - Generated quizzes and briefings
 
 ### Key Features
 - Vector similarity search using cosine distance
@@ -267,7 +264,7 @@ The application uses ScraperAPI for reliable URL content extraction:
    - Ensure URL is accessible
    - Test with `npm run test-scraping`
 
-5. **PDF Processing Issues**
+5. **Source Processing Issues**
    - Note: PDF support is currently disabled for security
    - Use text input or URL sources instead
    - PDF parsing will be re-enabled in future updates
