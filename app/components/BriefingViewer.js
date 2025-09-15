@@ -13,10 +13,10 @@ export default function BriefingViewer({ briefings, onGenerate, loading }) {
     return (
       <div className="p-4">
         <div className="text-center py-8">
-          <h3 className="text-lg font-medium text-secondary-700 mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No Briefings Yet
           </h3>
-          <p className="text-secondary-500 mb-4">
+          <p className="text-muted-foreground mb-4">
             Generate briefings from your sources to get comprehensive summaries.
           </p>
           <button
@@ -36,7 +36,7 @@ export default function BriefingViewer({ briefings, onGenerate, loading }) {
       {/* Briefing Selector */}
       {briefings.length > 1 && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Briefing
           </label>
           <select
@@ -70,18 +70,18 @@ export default function BriefingViewer({ briefings, onGenerate, loading }) {
 
       {/* Briefing Content */}
       {selectedBriefing && (
-        <div className="bg-white rounded-lg border border-secondary-200 p-6">
+        <div className="card p-6">
           <div className="mb-4">
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
+            <h3 className="text-lg font-medium text-card-foreground mb-2">
               {selectedBriefing.title}
             </h3>
-            <div className="text-sm text-secondary-500">
+            <div className="text-sm text-muted-foreground">
               Created: {new Date(selectedBriefing.createdAt).toLocaleDateString()}
             </div>
           </div>
           
           <div className="prose prose-sm max-w-none">
-            <div className="text-secondary-800 leading-relaxed whitespace-pre-wrap">
+            <div className="text-card-foreground leading-relaxed whitespace-pre-wrap">
               {selectedBriefing.content}
             </div>
           </div>
@@ -90,18 +90,18 @@ export default function BriefingViewer({ briefings, onGenerate, loading }) {
 
       {/* Auto-select first briefing if only one exists */}
       {briefings.length === 1 && !selectedBriefing && (
-        <div className="bg-white rounded-lg border border-secondary-200 p-6">
+        <div className="card p-6">
           <div className="mb-4">
-            <h3 className="text-lg font-medium text-secondary-900 mb-2">
+            <h3 className="text-lg font-medium text-card-foreground mb-2">
               {briefings[0].title}
             </h3>
-            <div className="text-sm text-secondary-500">
+            <div className="text-sm text-muted-foreground">
               Created: {new Date(briefings[0].createdAt).toLocaleDateString()}
             </div>
           </div>
           
           <div className="prose prose-sm max-w-none">
-            <div className="text-secondary-800 leading-relaxed whitespace-pre-wrap">
+            <div className="text-card-foreground leading-relaxed whitespace-pre-wrap">
               {briefings[0].content}
             </div>
           </div>
@@ -115,12 +115,12 @@ export default function BriefingViewer({ briefings, onGenerate, loading }) {
             <div
               key={briefing.id}
               onClick={() => handleBriefingSelect(briefing)}
-              className="bg-white rounded-lg border border-secondary-200 p-4 cursor-pointer hover:bg-secondary-50 transition-colors"
+              className="card p-4 cursor-pointer hover:bg-accent transition-colors"
             >
-              <h4 className="font-medium text-secondary-900 mb-1">
+              <h4 className="font-medium text-card-foreground mb-1">
                 {briefing.title}
               </h4>
-              <p className="text-sm text-secondary-500">
+              <p className="text-sm text-muted-foreground">
                 Created: {new Date(briefing.createdAt).toLocaleDateString()}
               </p>
             </div>
