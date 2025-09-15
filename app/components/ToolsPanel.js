@@ -82,10 +82,10 @@ export default function ToolsPanel({ notebook }) {
     return (
       <div className="flex items-center justify-center h-full bg-secondary-50">
         <div className="text-center">
-          <h2 className="text-lg font-semibold text-secondary-700 mb-2">
+          <h2 className="text-lg font-semibold text-foreground mb-2">
             Study Tools
           </h2>
-          <p className="text-secondary-500">
+          <p className="text-muted-foreground">
             Select a notebook to access study tools
           </p>
         </div>
@@ -100,8 +100,8 @@ export default function ToolsPanel({ notebook }) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-secondary-200">
-        <h2 className="text-lg font-semibold text-secondary-900 mb-4">
+      <div className="p-4 border-b border-border">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Study Tools
         </h2>
         
@@ -113,13 +113,13 @@ export default function ToolsPanel({ notebook }) {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-white text-primary-600 shadow-sm'
-                  : 'text-secondary-600 hover:text-secondary-900'
+                  ? 'bg-background text-primary shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {tab.label}
               {tab.count > 0 && (
-                <span className="ml-1 text-xs bg-secondary-200 text-secondary-700 px-1.5 py-0.5 rounded-full">
+                <span className="ml-1 text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
                   {tab.count}
                 </span>
               )}

@@ -55,10 +55,10 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
     return (
       <div className="p-4">
         <div className="text-center py-8">
-          <h3 className="text-lg font-medium text-secondary-700 mb-2">
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No Quizzes Yet
           </h3>
-          <p className="text-secondary-500 mb-4">
+          <p className="text-muted-foreground mb-4">
             Generate quizzes from your sources to test your knowledge.
           </p>
           <button
@@ -78,7 +78,7 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
       {/* Quiz Selector */}
       {quizzes.length > 1 && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-secondary-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Quiz
           </label>
           <select
@@ -115,7 +115,7 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
         <>
           {/* Text Quiz Display */}
           {isTextQuiz ? (
-            <div className="bg-white rounded-lg border border-secondary-200 p-6">
+            <div className="card p-6">
               <div className="prose max-w-none">
                 <pre className="whitespace-pre-wrap text-sm leading-relaxed">
                   {typeof selectedQuiz.content === 'string' ? selectedQuiz.content : selectedQuiz.content.content}
@@ -123,12 +123,12 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
               </div>
             </div>
           ) : currentQuestion && (
-        <div className="bg-white rounded-lg border border-secondary-200 p-6">
+        <div className="card p-6">
           <div className="mb-4">
-            <div className="text-sm text-secondary-500 mb-2">
+            <div className="text-sm text-muted-foreground mb-2">
               Question {currentQuestionIndex + 1} of {selectedQuiz.content.questions.length}
             </div>
-            <h3 className="text-lg font-medium text-secondary-900">
+            <h3 className="text-lg font-medium text-card-foreground">
               {currentQuestion.question}
             </h3>
           </div>
@@ -138,7 +138,7 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
               {currentQuestion.options.map((option, index) => (
                 <label
                   key={index}
-                  className="flex items-center p-3 border border-secondary-200 rounded-lg cursor-pointer hover:bg-secondary-50"
+                  className="flex items-center p-3 border border-border rounded-lg cursor-pointer hover:bg-accent"
                 >
                   <input
                     type="radio"
@@ -187,22 +187,22 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
 
       {/* Results */}
       {showResults && (
-        <div className="bg-white rounded-lg border border-secondary-200 p-6">
-          <h3 className="text-lg font-medium text-secondary-900 mb-4">
+        <div className="card p-6">
+          <h3 className="text-lg font-medium text-card-foreground mb-4">
             Quiz Results
           </h3>
           
           <div className="space-y-4">
             {selectedQuiz.content.questions.map((question, index) => (
-              <div key={index} className="border-b border-secondary-200 pb-4">
-                <h4 className="font-medium text-secondary-900 mb-2">
+              <div key={index} className="border-b border-border pb-4">
+                <h4 className="font-medium text-card-foreground mb-2">
                   Question {index + 1}: {question.question}
                 </h4>
                 <div className="text-sm">
-                  <p className="text-secondary-600 mb-1">
+                  <p className="text-muted-foreground mb-1">
                     <strong>Your answer:</strong> {answers[index] || 'No answer provided'}
                   </p>
-                  <p className="text-secondary-600">
+                  <p className="text-muted-foreground">
                     <strong>Correct answer:</strong> {question.answer}
                   </p>
                 </div>
@@ -223,7 +223,7 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
 
       {/* Quiz Info */}
       {selectedQuiz && (
-        <div className="mt-4 text-sm text-secondary-600">
+        <div className="mt-4 text-sm text-muted-foreground">
           <p><strong>Quiz:</strong> {selectedQuiz.title}</p>
           <p><strong>Questions:</strong> {selectedQuiz.content.questions.length}</p>
           <p><strong>Created:</strong> {new Date(selectedQuiz.createdAt).toLocaleDateString()}</p>
