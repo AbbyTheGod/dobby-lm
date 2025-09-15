@@ -55,7 +55,7 @@ export default function QuizViewer({ quizzes, onGenerate, loading }) {
     return (
       <div className="p-4">
         <div className="text-center py-8">
-          <h3 className="text-lg font-medium text-foreground mb-2">
+          <h3 className="text-lg font-medium text-primary mb-2">
             No Quizzes Yet
           </h3>
           <p className="text-muted-foreground mb-4">
