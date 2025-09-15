@@ -13,9 +13,8 @@ export async function POST(request) {
     const type = formData.get('type');
     const content = formData.get('content');
     const url = formData.get('url');
-    const file = formData.get('file');
 
-    console.log('📋 Sources API: Form data:', { notebookId, title, type, content: content?.substring(0, 100), url, file: file?.name });
+    console.log('📋 Sources API: Form data:', { notebookId, title, type, content: content?.substring(0, 100), url });
 
     if (!notebookId || !type) {
       console.log('❌ Sources API: Missing required fields');
@@ -26,12 +25,7 @@ export async function POST(request) {
     let filePath = null;
 
     // Handle different source types
-    if (type === 'pdf' && file) {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      extractedContent = await extractTextFromPDF(buffer);
-      filePath = `uploads/${Date.now()}_${file.name}`;
-      // In production, you'd save the file to disk or cloud storage
-    } else if (type === 'url' && url) {
+    if (type === 'url' && url) {
       try {
         // Validate URL format
         new URL(url);
