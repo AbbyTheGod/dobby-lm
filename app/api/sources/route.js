@@ -128,33 +128,43 @@ export async function GET(request) {
 
 export async function DELETE(request) {
   try {
+    console.log('🗑️ DELETE request received');
     const { searchParams } = new URL(request.url);
     const sourceId = searchParams.get('sourceId');
+    
+    console.log('🗑️ Source ID from URL:', sourceId);
+    console.log('🗑️ Full URL:', request.url);
 
     if (!sourceId) {
+      console.log('❌ No source ID provided');
       return NextResponse.json({ error: 'Source ID is required' }, { status: 400 });
     }
-
-    // Database should already be initialized, no need to reinitialize on every delete
 
     console.log('🗑️ Sources API: Deleting source:', sourceId);
     
     // Convert sourceId to string to ensure consistent type
     const sourceIdStr = String(sourceId);
+    console.log('🗑️ Converted source ID:', sourceIdStr);
 
     // Check if the specific source exists
+    console.log('🔍 Checking if source exists...');
     const sourceCheck = await query('SELECT * FROM sources WHERE id = $1', [sourceIdStr]);
+    console.log('🔍 Source check result:', sourceCheck.rows.length, 'rows found');
     
     if (sourceCheck.rows.length === 0) {
       console.log('❌ Sources API: Source not found in database');
       return NextResponse.json({ error: 'Source not found' }, { status: 404 });
     }
     
+    console.log('🗑️ Deleting associated chunks...');
     // Delete associated chunks first
-    await query('DELETE FROM chunks WHERE source_id = $1', [sourceIdStr]);
+    const chunksResult = await query('DELETE FROM chunks WHERE source_id = $1', [sourceIdStr]);
+    console.log('🗑️ Deleted', chunksResult.rowCount, 'chunks');
 
+    console.log('🗑️ Deleting source...');
     // Delete the source
     const result = await query('DELETE FROM sources WHERE id = $1 RETURNING *', [sourceIdStr]);
+    console.log('🗑️ Deleted', result.rowCount, 'sources');
 
     console.log('✅ Sources API: Source deleted successfully');
     return NextResponse.json({ 
@@ -163,6 +173,7 @@ export async function DELETE(request) {
     });
   } catch (error) {
     console.error('❌ Sources API: Error deleting source:', error);
+    console.error('❌ Error stack:', error.stack);
     return NextResponse.json({ 
       error: 'Failed to delete source', 
       details: error.message 

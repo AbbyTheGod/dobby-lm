@@ -105,7 +105,17 @@ export default function Home() {
     }
   };
 
+  const [deletingSourceId, setDeletingSourceId] = useState(null);
+
   const handleSourceDeleted = async (sourceId) => {
+    // Prevent double-clicks
+    if (deletingSourceId === sourceId) {
+      console.log('⚠️ Frontend: Already deleting this source, ignoring click');
+      return;
+    }
+
+    setDeletingSourceId(sourceId);
+    
     try {
       console.log('🗑️ Frontend: Attempting to delete source:', sourceId);
       const response = await fetch(`/api/sources?sourceId=${sourceId}`, {
@@ -129,6 +139,8 @@ export default function Home() {
     } catch (error) {
       console.error('❌ Frontend: Error deleting source:', error);
       alert(`Failed to delete source: ${error.message}`);
+    } finally {
+      setDeletingSourceId(null);
     }
   };
 
@@ -168,6 +180,7 @@ export default function Home() {
             sources={sources}
             onSourceAdded={handleSourceAdded}
             onSourceDeleted={handleSourceDeleted}
+            deletingSourceId={deletingSourceId}
             showAddSource={showAddSourceModal}
             setShowAddSource={setShowAddSourceModal}
           />
@@ -199,6 +212,7 @@ export default function Home() {
           sources={sources}
           onSourceAdded={handleSourceAdded}
           onSourceDeleted={handleSourceDeleted}
+          deletingSourceId={deletingSourceId}
         />
       </div>
 
