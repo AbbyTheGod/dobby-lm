@@ -13,7 +13,9 @@ export default function MobileLayout({
   sources,
   onSourceAdded,
   onSourceDeleted,
-  deletingSourceId
+  deletingSourceId,
+  showAddSource,
+  setShowAddSource
 }) {
   const [activeView, setActiveView] = useState('chat'); // 'sidebar', 'chat', 'tools'
 
@@ -86,6 +88,8 @@ export default function MobileLayout({
               onSourceAdded={onSourceAdded}
               onSourceDeleted={onSourceDeleted}
               deletingSourceId={deletingSourceId}
+              showAddSource={showAddSource}
+              setShowAddSource={setShowAddSource}
             />
           </div>
         )}

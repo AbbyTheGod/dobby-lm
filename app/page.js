@@ -220,6 +220,8 @@ export default function Home() {
           onSourceAdded={handleSourceAdded}
           onSourceDeleted={handleSourceDeleted}
           deletingSourceId={deletingSourceId}
+          showAddSource={showAddSourceModal}
+          setShowAddSource={setShowAddSourceModal}
         />
       </div>
 
