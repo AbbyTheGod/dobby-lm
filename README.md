@@ -28,7 +28,7 @@ A lightweight AI-powered notebook application built with Next.js and session-bas
 - 💾 **Storage**: Session-based in-memory database (clears on refresh)
 - 🤖 **AI**: Fireworks API (Dobby 8B model)
 - 🧠 **Embeddings**: BGE-small-en model via Transformers.js
-- 🌐 **Web Scraping**: ScraperAPI for reliable content extraction
+- 🌐 **Web Scraping**: Perplexity API for JavaScript-heavy sites, SPAs, social media
 
 
 
@@ -48,7 +48,8 @@ A lightweight AI-powered notebook application built with Next.js and session-bas
 4. The source will be automatically processed and chunked
 
 ### 🌐 Supported Websites
-Works with traditional websites (Wikipedia, news sites, blogs). Not supported: JavaScript-heavy sites, SPAs, e-commerce.
+✅ **Works Great**: Wikipedia, news sites, blogs, documentation, articles, JavaScript-heavy sites, SPAs, social media, e-commerce
+❌ **Not Supported**: Paywalled content, private/restricted sites
 
 ### 💬 Chatting
 1. Once sources are processed, start asking questions

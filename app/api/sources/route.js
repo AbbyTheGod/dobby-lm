@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '../../../lib/database.js';
 import { extractTextFromPDF, extractTextFromURL } from '../../../lib/text-processing.js';
-import { extractTextFromURL as extractTextFromURLScraperAPI } from '../../../lib/simple-scraping.js';
+import { scrapeWithPerplexity } from '../../../lib/perplexity-api.js';
 
 export async function POST(request) {
   try {
@@ -30,36 +30,33 @@ export async function POST(request) {
         // Validate URL format
         new URL(url);
         
-        // Use ScraperAPI for reliable web scraping
-        console.log('🚀 Using ScraperAPI for URL scraping:', url);
-        const urlResult = await extractTextFromURLScraperAPI(url);
+        // Use Perplexity API for web scraping (handles JavaScript-heavy sites)
+        console.log('🚀 Using Perplexity API for URL scraping:', url);
+        const perplexityResult = await scrapeWithPerplexity(url, process.env.PERPLEXITY_API_KEY);
         
-        console.log('🔍 Scraping result:', {
-          title: urlResult.title,
-          contentLength: urlResult.content?.length || 0,
-          source: urlResult.source,
-          status: urlResult.status
+        console.log('🔍 Perplexity scraping result:', {
+          success: perplexityResult.success,
+          contentLength: perplexityResult.content?.length || 0,
+          source: perplexityResult.source,
+          error: perplexityResult.error
         });
         
-        extractedContent = urlResult.content;
-        // Use the extracted title if no title was provided
+        if (!perplexityResult.success) {
+          console.log('❌ Perplexity API failed:', perplexityResult.error);
+          return NextResponse.json({ 
+            error: `Failed to extract content from URL: ${perplexityResult.error}`, 
+            details: 'Perplexity API scraping failed'
+          }, { status: 400 });
+        }
+        
+        extractedContent = perplexityResult.content;
+        
+        // Use the URL hostname as title if no title was provided
         if (!title || title.trim() === '') {
-          title = urlResult.title || new URL(url).hostname;
+          title = new URL(url).hostname;
         }
         
-        console.log(`✅ URL processed successfully using ${urlResult.source}`);
-        
-        // Check if the site is unsupported or scraping failed
-        if (urlResult.status === 'unsupported') {
-          console.log('⚠️ Sources API: Site is unsupported, setting status to unsupported');
-          // Create source with unsupported status
-          const result = await query(
-            `INSERT INTO sources (notebook_id, title, type, content, url, file_path, status)
-             VALUES ($1, $2, $3, $4, $5, $6, 'unsupported') RETURNING *`,
-            [notebookId, title, type, extractedContent, url, filePath]
-          );
-          return NextResponse.json(result.rows[0], { status: 201 });
-        }
+        console.log(`✅ URL processed successfully using ${perplexityResult.source}`);
         
         // Check if scraping returned very little content (likely failed)
         if (!extractedContent || extractedContent.length < 50) {
@@ -67,14 +64,14 @@ export async function POST(request) {
           const result = await query(
             `INSERT INTO sources (notebook_id, title, type, content, url, file_path, status)
              VALUES ($1, $2, $3, $4, $5, $6, 'unsupported') RETURNING *`,
-            [notebookId, title, type, 'This website is not supported for scraping. The content could not be retrieved properly.', url, filePath]
+            [notebookId, title, type, 'This website content could not be retrieved properly.', url, filePath]
           );
           return NextResponse.json(result.rows[0], { status: 201 });
         }
       } catch (urlError) {
         console.error('❌ URL processing error:', urlError);
         return NextResponse.json({ 
-          error: 'Failed to extract content from URL. This could be because:\n• The website requires JavaScript or has anti-bot protection\n• The site is temporarily unavailable\n• The URL is invalid or inaccessible\n\nTry a different URL or contact support if the issue persists.', 
+          error: 'Failed to extract content from URL. This could be because:\n• The website is temporarily unavailable\n• The URL is invalid or inaccessible\n• Perplexity API is not configured\n\nTry a different URL or contact support if the issue persists.', 
           details: urlError.message 
         }, { status: 400 });
       }
