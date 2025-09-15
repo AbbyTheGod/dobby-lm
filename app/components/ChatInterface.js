@@ -23,13 +23,63 @@ export default function ChatInterface({ notebook, sources }) {
     setShowSuggestions(true);
   };
 
-  const handleQuickAction = (action) => {
-    setInputMessage(action);
+  const handleQuickAction = async (action) => {
+    if (!notebook || isLoading) return;
+    
     setShowSuggestions(false);
-    // Auto-send the message
-    setTimeout(() => {
-      handleSendMessage({ preventDefault: () => {} });
-    }, 100);
+    
+    const userMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: action,
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          notebookId: notebook.id,
+          message: action,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const assistantMessage = {
+          id: data.messageId,
+          role: 'assistant',
+          content: data.message,
+          citations: data.citations,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        const errorData = await response.json();
+        const errorMessage = {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: `Error: ${errorData.error}`,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Sorry, there was an error processing your message.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSendMessage = async (e) => {
@@ -189,15 +239,36 @@ export default function ChatInterface({ notebook, sources }) {
               Ask questions about your sources and get grounded answers with intelligent citations.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
+              <button
+                onClick={() => handleQuickAction('Summarize the main points')}
+                className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-600 hover:scale-105"
+              >
                 Try: "Summarize the main points"
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
+              </button>
+              <button
+                onClick={() => handleQuickAction('What are the key findings?')}
+                className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-600 hover:scale-105"
+              >
                 Try: "What are the key findings?"
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
+              </button>
+              <button
+                onClick={() => handleQuickAction('Explain this concept')}
+                className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-600 hover:scale-105"
+              >
                 Try: "Explain this concept"
-              </span>
+              </button>
+              <button
+                onClick={() => handleQuickAction('Create a study guide')}
+                className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-600 hover:scale-105"
+              >
+                Try: "Create a study guide"
+              </button>
+              <button
+                onClick={() => handleQuickAction('What are the main arguments?')}
+                className="text-xs text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-600 hover:scale-105"
+              >
+                Try: "What are the main arguments?"
+              </button>
             </div>
           </div>
         ) : (
