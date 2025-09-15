@@ -80,7 +80,7 @@ export async function POST(request) {
       } catch (urlError) {
         console.error('❌ URL processing error:', urlError);
         return NextResponse.json({ 
-          error: 'Invalid URL or failed to extract content', 
+          error: 'Failed to extract content from URL. This could be because:\n• The website requires JavaScript or has anti-bot protection\n• The site is temporarily unavailable\n• The URL is invalid or inaccessible\n\nTry a different URL or contact support if the issue persists.', 
           details: urlError.message 
         }, { status: 400 });
       }
