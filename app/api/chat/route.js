@@ -100,6 +100,7 @@ Try uploading a supported website URL to get started!`,
     try {
       aiResponse = await callFireworksAPI(messages);
       console.log(`✅ Dobby responded with ${aiResponse.length} characters`);
+      console.log('🔧 Chat API - Final response preview:', aiResponse.substring(0, 300));
     } catch (fireworksError) {
       console.error('❌ Fireworks API error:', fireworksError);
       // Return a fallback response if Fireworks API fails

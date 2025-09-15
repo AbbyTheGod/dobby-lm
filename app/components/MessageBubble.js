@@ -94,7 +94,7 @@ export default function MessageBubble({ message, sources }) {
           <div className="flex-1 min-w-0">
             <div className="prose prose-sm max-w-none">
               {isUser ? (
-                <p className="mb-0 text-primary-foreground leading-relaxed">{message.content}</p>
+                <pre className="whitespace-pre-wrap mb-0 text-primary-foreground leading-relaxed font-sans">{message.content}</pre>
               ) : (
                 <div className="text-foreground leading-relaxed">
                   {message.content.includes('QUIZ QUESTIONS') ? (
@@ -102,7 +102,9 @@ export default function MessageBubble({ message, sources }) {
                       {renderContentWithCitations(message.content)}
                     </pre>
                   ) : (
-                    renderContentWithCitations(message.content)
+                    <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
+                      {renderContentWithCitations(message.content)}
+                    </pre>
                   )}
                 </div>
               )}
