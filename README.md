@@ -58,7 +58,6 @@ A lightweight AI-powered notebook application built with Next.js and session-bas
 
 ### 📚 Study Tools
 1. Use the right panel to generate:
-   - **Quizzes**: Multiple choice and short answer questions
    - **Briefings**: Comprehensive summaries
 2. Click "Generate" buttons to create new study materials
 
